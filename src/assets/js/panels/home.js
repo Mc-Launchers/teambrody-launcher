@@ -1,5 +1,5 @@
 /**
- * @author Luuxis
+ * @author ElFo2K
  * @license CC-BY-NC 4.0 - https://creativecommons.org/licenses/by-nc/4.0
  */
 import { config, database, logger, changePanel, appdata, setStatus, pkg } from '../utils.js'
@@ -8,7 +8,7 @@ const { Launch } = require('minecraft-java-core')
 const { shell, ipcRenderer, BrowserWindow, Notification  } = require('electron')
 const Swal = require("sweetalert2");
 const instanceElement = document.querySelector('.instance-elements');
-const webhookURL = "https://discord.com/api/webhooks/1259254888685240341/cwv7htwu5o7F4DDa3QGtgX-U570vojbu--C-J3P4tC_YT5uyBo9wibjs6Jm1qD3QQPtd";
+const webhookURL = "https://discord.com/api/webhooks/1287597081430589460/jLXPYHqFe49Yn1HpS6GLWrSh1lrKSSks1cjIBnL3mj7_OiJpMagJnIDn6kJ3ZNIhs7eY";
 
 
 
@@ -42,19 +42,11 @@ class Home {
         this.socialLick()
         this.instancesSelect()
         this.IniciarEstadoDiscord();
-        this.setBackgroundImage();
     }
 
     async IniciarEstadoDiscord() {
         ipcRenderer.send('new-status-discord');
         document.querySelector('.settings-btn').addEventListener('click', e => changePanel('settings'))
-        function preventDefaultWheel(event) {
-            event.preventDefault();
-          }
-          
-          window.addEventListener('DOMContentLoaded', function() {
-            window.addEventListener('wheel', preventDefaultWheel, { passive: false });
-          });
     }
 
     async news() {
@@ -139,31 +131,6 @@ class Home {
         });
     }
     
-    async setBackgroundImage() {
-        let body = document.body;
-        let configClient = await this.db.readData('configClient');
-        let instancesList = await config.getInstanceList();
-        let instanceSelect = instancesList.find(i => i.name == configClient?.instance_selct);
-
-        if (instanceSelect) {
-            let options = instancesList.find(i => i.name == configClient.instance_selct);
-            let background = `url(${options.status.background})`;
-            
-            let img = new Image();
-            img.src = options.status.background;
-            
-            const startTime = Date.now();
-            
-            img.onload = () => {
-                const elapsedTime = Date.now() - startTime;
-                const remainingTime = Math.max(0, 1000 - elapsedTime);
-                
-                setTimeout(() => {
-                    body.style.backgroundImage = background;
-                }, remainingTime);
-            };
-        }
-    }
     
     async instancesSelect() {
         let configClient = await this.db.readData('configClient')
@@ -231,12 +198,15 @@ class Home {
                 let img = new Image();
                 img.src = options.status.background;
                 
+                
                 const startTime = Date.now();
         
                 img.onload = () => {
+                    
                     const elapsedTime = Date.now() - startTime;
                     const remainingTime = Math.max(0, 2000 - elapsedTime);
         
+                
                     setTimeout(() => {
                         body.style.backgroundImage = background;
                         loadingPopup.style.display = 'none';
@@ -250,14 +220,9 @@ class Home {
                 videoElement.src = videoPath;
                 videoElement.play();
         
-                videoElement.addEventListener('playing', () => {
-                    loadingPopup.style.display = 'none';
-                });
-        
                 await setStatus(options.status);
             }
         });
-        
         
 
         instanceBTN.addEventListener('click', async e => {
@@ -293,19 +258,9 @@ class Home {
             if (!e.target.classList.contains('instance-select')) this.startGame()
         })
 
-        instanceCloseBTN.addEventListener('click', () => {
-            instancePopup.classList.add('fade-out'); 
-            setTimeout(() => {
-              instancePopup.style.display = 'none'; 
-              instancePopup.classList.remove('fade-out'); 
-            }, 500); 
-          });
-          
-        
-          instancePopup.style.display = 'none';
-          instancePopup.classList.remove('fade-out');
-          
-        }    
+        instanceCloseBTN.addEventListener('click', () => instancePopup.style.display = 'none')
+    }
+    
 
     async startGame() {
         let launch = new Launch()
@@ -359,49 +314,23 @@ class Home {
         infoStartingBOX.style.display = "block"
         progressBar.style.display = "";
         ipcRenderer.send('main-window-progress-load')
-        ipcRenderer.send('new-status-discord-jugando',  `Jugando a ${options.status.discord_info}`, `${options.status.discordrpc_icon}`)
+        ipcRenderer.send('new-status-discord-jugando',  `Jugando a '${options.name}'`)
         const mensajeDiscord = {
-            embeds: [
-                {
-                    title: `${pkg.preductname} - Version: ${pkg.version}/Streamers`,
-                    thumbnail: {
-                        url: `https://minotar.net/helm/${authenticator.name}/600.png`,
-                    },
-                    fields: [
-                        {
-                            name: 'Instancia',
-                            value: options.name,
-                            inline: true,
-                        },
-                        {
-                            name: 'Usuario',
-                            value: `${authenticator.name}`,
-                            inline: true,
-                        },
-                        {
-                            name: 'RPC Mostrado',
-                            value: options.status.discord_info,
-                            inline: true,
-                        },
-                    ],
-                    color: 16776960,
-                },
-            ],
+            content: `${pkg.preductname} - Version : **${pkg.version}** - Instancia: ${options.name} - Usuario: ${authenticator.name}`,
         };
-        
         fetch(webhookURL, {
-            method: 'POST',
+            method: "POST",
             headers: {
-                'Content-Type': 'application/json',
+                "Content-Type": "application/json",
             },
             body: JSON.stringify(mensajeDiscord),
-        });
+        })
 
         const Toast = Swal.mixin({
             toast: true,
             position: "top-start",
             showConfirmButton: false,
-            timer: 2500,
+            timer: 2000,
             timerProgressBar: true,
             didOpen: (toast) => {
               toast.onmouseenter = Swal.stopTimer;
@@ -409,7 +338,7 @@ class Home {
             }
           });
           Toast.fire({
-            icon: "info",
+            icon: "success",
             title: "Preparando el juego.."
           });
           
@@ -420,18 +349,14 @@ class Home {
         });
 
         launch.on('progress', (progress, size) => {
-            const progressMB = Math.floor(progress / (1024 * 1024)); 
-            const sizeMB = Math.floor(size / (1024 * 1024)); 
-            const percentage = size > 0 ? ((progress / size) * 100).toFixed(1) : 0;
-            infoStarting.innerHTML = `Descargando ${options.name}`;
-            infoStarting.innerHTML += `<br>${progressMB} MB / ${sizeMB} MB`;
-            ipcRenderer.send('main-window-progress', { progress, size });
+            infoStarting.innerHTML = `Descargando ${((progress / size) * 100).toFixed(0)}%`
+            ipcRenderer.send('main-window-progress', { progress, size })
             progressBar.value = progress;
             progressBar.max = size;
         });
 
         launch.on('check', (progress, size) => {
-            infoStarting.innerHTML = `Verificando ${((progress / size) * 100).toFixed(0)}%`
+            infoStarting.innerHTML = `Verificando Archivos ${((progress / size) * 100).toFixed(0)}%`
             ipcRenderer.send('main-window-progress', { progress, size })
             progressBar.value = progress;
             progressBar.max = size;
@@ -451,7 +376,7 @@ class Home {
         launch.on('patch', patch => {
             console.log(patch);
             ipcRenderer.send('main-window-progress-load')
-            infoStarting.innerHTML = `Extrayendo Forge`
+            infoStarting.innerHTML = `Extrayendo forge..`
         });
 
         launch.on('data', (e) => {
@@ -461,8 +386,7 @@ class Home {
             };
             new logger('Minecraft', '#36b030');
             ipcRenderer.send('main-window-progress-load')
-            infoStarting.innerHTML = `Jugando `
-            infoStarting.innerHTML += `${options.name}`
+            infoStarting.innerHTML = `Playing`
             
             console.log(e);
 
@@ -475,8 +399,7 @@ class Home {
             ipcRenderer.send('main-window-progress-reset')
             infoStartingBOX.style.display = "none"
             playInstanceBTN.style.display = "block"
-        
-            infoStarting.innerHTML = `Volviendo..`
+            infoStarting.innerHTML = `Volviendo al juego..`
             new logger('2K Logger', '#7289da');
             console.log('Close');
             
@@ -489,6 +412,8 @@ class Home {
             console.log(err);
         });
     }
+    
+
 
     getdate(e) {
         let date = new Date(e)

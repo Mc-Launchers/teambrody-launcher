@@ -1,0 +1,69 @@
+.login .container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.login-tabs {
+    position: absolute;
+    padding: 20px;
+    background: var(--background);
+    border-radius: 15px;
+    text-align: center;
+    min-width: 40%;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.login-home,
+.login-offline,
+.login-AZauth,
+.login-AZauth-A2F {
+    display: none;
+}
+
+.login-text {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+}
+
+.connect,
+.cancel {
+    background: var(--element-color);
+    color: #fff;
+    border: none;
+    border-radius: 30px;
+    padding: 0.5rem 2rem;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+    box-shadow: 0 0 40px rgba(52, 96, 178, 0.7);
+    backdrop-filter: blur(8%);
+}
+
+.connect:hover,
+.cancel:hover {
+    background: #3441b2; /* Cambia al color azul oscuro deseado */
+    color: #fff;
+    box-shadow: 0 0 40px rgba(52, 60, 178, 0.7);
+}
+
+.input-login .email,
+.input-login .password,
+.A2F {
+    color: var(--color);
+    background: none;
+    border: solid 2px var(--element-color);
+    border-radius: 30px;
+    width: 100%;
+    padding: 0.5rem 1rem;
+    margin-top: 15px;
+}
+
+/* Estilo al pasar el ratón sobre los campos de entrada */
+.input-login .email:hover,
+.input-login .password:hover,
+.A2F:hover {
+    border-color: #3448b2; /* Cambia al color azul oscuro deseado */
+}

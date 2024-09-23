@@ -1,17 +1,17 @@
 /**
- * @author Luuxis
+ * @author ElFo2K
  * @license CC-BY-NC 4.0 - https://creativecommons.org/licenses/by-nc/4.0
  */
-
+// import panel
 import Login from './panels/login.js';
 import Home from './panels/home.js';
 import Settings from './panels/settings.js';
 
-
+// import modules
 import { logger, config, changePanel, database, popup, setBackground, accountSelect, addAccount, pkg } from './utils.js';
 const { AZauth, Microsoft, Mojang } = require('minecraft-java-core');
 
-
+// libs
 const { ipcRenderer } = require('electron');
 const fs = require('fs');
 
@@ -37,7 +37,7 @@ class Launcher {
                 ipcRenderer.send('main-window-dev-tools');
             }
         })
-        new logger('LOGS', '#7289da')
+        new logger('2K Logger', '#7289da')
     }
 
     shortcut() {
@@ -51,8 +51,8 @@ class Launcher {
 
     errorConnect() {
         new popup().openPopup({
-            title: 'Error al conectarse',
-            content: 'Se produjo un error general en el launcher, contacta a ElFo2K para solucionar este problema.',
+            title: this.config.error.code,
+            content: this.config.error.message,
             color: 'red',
             exit: true,
             options: true
@@ -98,7 +98,7 @@ class Launcher {
                 },
                 launcher_config: {
                     download_multi: 30,
-                    theme: 'dark',
+                    theme: 'auto',
                     closeLauncher: 'close-launcher',
                     intelEnabledMac: true
                 }
@@ -132,10 +132,10 @@ class Launcher {
                     continue
                 }
                 if (account.meta.type === 'Xbox') {
-                    console.log(`Accediendo con el Usuario: ${account.name}`);
+                    console.log(`Tipo de cuenta: ${account.meta.type} | Usuario: ${account.name}`);
                     popupRefresh.openPopup({
                         title: 'Conectando y verificando.',
-                        content: `Accediendo con el Usuario: ${account.name}`,
+                        content: `Tipo de cuenta: ${account.meta.type} | Usuario: ${account.name}`,
                         color: 'var(--color)',
                         background: false
                     });
@@ -157,10 +157,10 @@ class Launcher {
                     await addAccount(refresh_accounts)
                     if (account_ID == account_selected) accountSelect(refresh_accounts)
                 } else if (account.meta.type == 'AZauth') {
-                    console.log(`Accediendo con el Usuario: ${account.name}`);
+                    console.log(`Tipo de cuenta: ${account.meta.type} | Usuario: ${account.name}`);
                     popupRefresh.openPopup({
                         title: 'Conectando y verificando.',
-                        content: `Accediendo con el Usuario: ${account.name}`,
+                        content: `Tipo de cuenta: ${account.meta.type} | Usuario: ${account.name}`,
                         color: 'var(--color)',
                         background: false
                     });
@@ -181,10 +181,10 @@ class Launcher {
                     await addAccount(refresh_accounts)
                     if (account_ID == account_selected) accountSelect(refresh_accounts)
                 } else if (account.meta.type == 'Mojang') {
-                    console.log(`Accediendo con el Usuario: ${account.name}`);
+                    console.log(`Tipo de cuenta: ${account.meta.type} | Usuario: ${account.name}`);
                     popupRefresh.openPopup({
                         title: 'Conectando y verificando.',
-                        content: `Accediendo con el Usuario: ${account.name}`,
+                        content: `Tipo de cuenta: ${account.meta.type} | Usuario: ${account.name}`,
                         color: 'var(--color)',
                         background: false
                     });

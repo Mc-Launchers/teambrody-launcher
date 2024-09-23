@@ -1,5 +1,5 @@
 /**
- * @author Luuxis
+ * @author ElFo2K
  * @license CC-BY-NC 4.0 - https://creativecommons.org/licenses/by-nc/4.0
  */
 
@@ -22,16 +22,12 @@ function destroyWindow() {
 
 function createWindow() {
     destroyWindow();
-    const borderWidth = 20; 
-    const windowWidth = 400 + borderWidth * 2; 
-    const windowHeight = 500 + borderWidth * 2;
     updateWindow = new BrowserWindow({
         title: "2K - Updater",
-        width: 1280,
-        height: 720,
+        width: 400,
+        height: 500,
         resizable: false,
         icon: `./src/assets/images/icon.${os.platform() === "win32" ? "ico" : "png"}`,
-        transparent: os.platform() === 'win32',
         frame: false,
         show: false,
         webPreferences: {

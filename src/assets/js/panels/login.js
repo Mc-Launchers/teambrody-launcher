@@ -27,7 +27,6 @@ class Login {
             });
         });
     }
-
     async getMicrosoft() {
         this.setupLogin('.login-home', '.connect-home', 'Conectando con Microsoft', 'Esperando respuesta de la sesion...', 'Microsoft-window');
     }

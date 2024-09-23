@@ -1,5 +1,5 @@
 /**
- * @author Luuxis
+ * @author ElFo2K
  * @license CC-BY-NC 4.0 - https://creativecommons.org/licenses/by-nc/4.0
  */
 
@@ -15,7 +15,7 @@ class Config {
         return new Promise((resolve, reject) => {
             nodeFetch(config).then(async config => {
                 if (config.status === 200) return resolve(config.json());
-                else return reject({ error: { code: config.statusText, message: 'Error en el URL de este Launcher - ID: 1' } });
+                else return reject({ error: { code: config.statusText, message: 'Servidor no accesible.' } });
             }).catch(error => {
                 return reject({ error });
             })
@@ -40,7 +40,7 @@ class Config {
         return new Promise((resolve, reject) => {
             nodeFetch(news).then(async config => {
                 if (config.status === 200) return resolve(config.json());
-                else return reject({ error: { code: config.statusText, message: 'Internal server error' } });
+                else return reject({ error: { code: config.statusText, message: 'Internal server error, contacta con un staff para solucionar este error.' } });
             }).catch(error => {
                 return reject({ error });
             })

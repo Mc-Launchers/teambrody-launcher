@@ -1,5 +1,5 @@
 /**
- * @author Luuxis
+ * @author ElFo2K
  * @license CC-BY-NC 4.0 - https://creativecommons.org/licenses/by-nc/4.0
  */
 const { ipcRenderer } = require('electron');
@@ -28,8 +28,8 @@ class Splash {
 
 	async startAnimation() {
 		let splashes = [{
-			"message": "  ",
-			"author": "TeamBrody"
+			"message": "Conectando con el servidor",
+			"author": "teambrody"
 		}, ]
         let splash = splashes[Math.floor(Math.random() * splashes.length)];
         this.splashMessage.textContent = splash.message;
@@ -59,7 +59,7 @@ class Splash {
 
 
         ipcRenderer.on('updateAvailable', () => {
-            this.setStatus(`Actualizando el launcher, espera un momento... `);
+            this.setStatus(`Actualizando.. `);
             this.toggleProgress();
             ipcRenderer.send('start-update');
         })
@@ -70,7 +70,7 @@ class Splash {
         })
 
         ipcRenderer.on('update-not-available', () => {
-            this.setStatus("Tienes la version mas reciente.");
+            console.error("Tienes la version mas reciente.");
             this.maintenanceCheck();
         })
     }
@@ -92,10 +92,10 @@ class Splash {
     }
 
     shutdown(text) {
-        this.setStatus(`${text}<br>`);
+        this.setStatus(`${text}<br>Cerrando 5s`);
         let i = 4;
         setInterval(() => {
-            this.setStatus(`${text}<br>${i--}s`);
+            this.setStatus(`${text}<br>Cerrando ${i--}s`);
             if (i < 0) ipcRenderer.send('update-window-close');
         }, 1000);
     }

@@ -66,7 +66,7 @@ class Index {
                 generateUpdatesFilesForAllChannels: false,
                 appId: preductname,
                 productName: preductname,
-                copyright: 'Copyright © 2024 ElFo2K',
+                copyright: 'Copyright © 2023-2024 ElFo2K',
                 artifactName: "${productName}-${os}-${arch}.${ext}",
                 extraMetadata: { main: 'app/app.js' },
                 files: ["app/**/*", "package.json", "LICENSE.md"],
@@ -85,11 +85,10 @@ class Index {
                     }]
                 },
                 nsis: {
-                    oneClick: false,
+                    oneClick: true,
                     allowToChangeInstallationDirectory: false,
                     createDesktopShortcut: true,
-                    runAfterFinish: true,
-                    license: 'LICENSE.md'
+                    runAfterFinish: true
                 },
                 mac: {
                     icon: "./app/assets/images/icon.icns",

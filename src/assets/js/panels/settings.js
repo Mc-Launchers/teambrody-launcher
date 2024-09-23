@@ -1,10 +1,10 @@
 /**
- * @author Luuxis
+ * @author ElFo2K
  * @license CC-BY-NC 4.0 - https://creativecommons.org/licenses/by-nc/4.0
  */
 
 import { changePanel, accountSelect, database, Slider, config, setStatus, popup, appdata, setBackground } from '../utils.js'
-const { ipcRenderer, shell } = require('electron');
+const { ipcRenderer } = require('electron');
 const os = require('os');
 const Swal = require('sweetalert2');
 
@@ -201,7 +201,7 @@ class Settings {
         let javaPathText = document.querySelector(".java-path-txt")
 
         let configClient = await this.db.readData('configClient')
-        let javaPath = configClient?.java_config?.java_path || 'Utilizando javaw integrado';
+        let javaPath = configClient?.java_config?.java_path || 'No toques este parametro si no sabes como funciona.';
         let javaPathInputTxt = document.querySelector(".java-path-input-text");
         let javaPathInputFile = document.querySelector(".java-path-input-file");
         javaPathInputTxt.value = javaPath;
@@ -227,18 +227,27 @@ class Settings {
 
         document.querySelector(".java-path-reset").addEventListener("click", async () => {
             let configClient = await this.db.readData('configClient')
-            javaPathInputTxt.value = 'Utilizando javaw integrado';
+            javaPathInputTxt.value = 'Si no sabes cambiar este parametro no lo cambies';
             configClient.java_config.java_path = null
             await this.db.updateData('configClient', configClient);
         });
     }
 
     initBtn1() {
-        document.querySelector('.twitter-2k').addEventListener('click', () => {
-            require('electron').shell.openExternal("https://twitter.com/ElFo2K")
+        document.querySelector('.twitter-teambrody').addEventListener('click', () => {
+            require('electron').shell.openExternal("https://x.com/teambrodyDanOficial")
         });
-        document.querySelector('.carlitos-2k').addEventListener('click', () => {
-            require('electron').shell.openExternal("https://x.com/Carlitoss_sg")
+
+        document.querySelector('.twitter-evento').addEventListener('click', () => {
+            require('electron').shell.openExternal("https://twitter.com/DesafioM2")
+        });
+
+        document.querySelector('.youtube').addEventListener('click', () => {
+            require('electron').shell.openExternal("https://www.youtube.com/channel/UCMLkJ1iGzjUwehiU-jHljlA")
+        });
+
+        document.querySelector('.twitch').addEventListener('click', () => {
+            require('electron').shell.openExternal("https://www.twitch.tv/teambrodydanoficial")
         });
     }
 
