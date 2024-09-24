@@ -15,15 +15,32 @@ class Splash {
         this.splashAuthor = document.querySelector(".splash-author");
         this.message = document.querySelector(".message");
         this.progress = document.querySelector(".progress");
-        document.addEventListener('DOMContentLoaded', async () => {
-            let databaseLauncher = new database();
-            let configClient = await databaseLauncher.readData('configClient');
-            let theme = configClient?.launcher_config?.theme || "sombre"
-            let isDarkTheme = await ipcRenderer.invoke('is-dark-theme', theme).then(res => res)
-            document.body.className = isDarkTheme ? 'dark global' : 'light global';
-            if (process.platform == 'win32') ipcRenderer.send('update-window-progress-load')
-            this.startAnimation()
+        document.addEventListener('DOMContentLoaded', () => {
+            const button = document.querySelector('#myButton');
+            if (button) {
+                button.addEventListener('click', () => {
+                    console.log('Botón clickeado');
+                });
+            } else {
+                console.error('No se encontró el elemento: #myButton');
+            }
+        
+            // Verificar si configClient y launcher_config existen
+            if (configClient && configClient.launcher_config) {
+                console.log('configClient existe:', configClient);
+            } else {
+                console.error('configClient o launcher_config no están definidos');
+            }
+        
+            // Verificar recursos
+            const img = document.createElement('img');
+            img.src = 'icon.png';
+            img.onerror = () => {
+                console.error('No se pudo cargar icon.png');
+            };
+            document.body.appendChild(img);
         });
+        
     }
 
 	async startAnimation() {

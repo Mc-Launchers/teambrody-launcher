@@ -1,10 +1,11 @@
 .settings .container {
     display: flex;
     height: 100%;
-    backdrop-filter: blur(8px); 
+    background-color: #00000048;
+    background-position: center;
+    background-size: contain;
+    backdrop-filter: blur(8px);
 }
-
-
 
 .nav-settings {
     width: 20%;
@@ -34,6 +35,7 @@
     border: solid 4px var(--background-element2);
     margin: 3rem;
     transition: border-color 0.3s, transform 0.3s;
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
 }
 
 .nav-settings-btn {
@@ -45,7 +47,15 @@
     text-align: center;
     margin: 0.5rem 0;
     cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s; 
 }
+
+.nav-settings-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(104, 104, 104, 0.5);
+}
+
+
 
 .nav-settings-elfo {
     font-size: 50%;
@@ -56,13 +66,19 @@
     text-align: center;
     margin: 0.5rem 0;
     cursor: pointer;
-    transition: background-color 0.3s, border-color 0.3s;
+    color: #000000;
+    background: radial-gradient(circle, rgb(145, 145, 145) 0%, rgb(54, 54, 54) 100%);
+    transition: transform 0.2s, box-shadow 0.2s; 
 }
 
-.nav-settings-elfo {
-    background: radial-gradient(circle, rgb(0, 174, 255) 0%, rgb(19, 79, 189) 100%);
-    transition: background 0.3s;
+.nav-settings-elfo:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px rgba(124, 124, 124, 0.596); 
+    letter-spacing: 1px;
+    transition: 0.2s;
+    cursor: pointer;
 }
+
 
 .active-settings-BTN {
     background: var(--element-color);
@@ -85,12 +101,48 @@
 }
 
 .settings-elements-box {
-    background: var(--background-element);
+    background: #201f29c0;
     width: 80%;
     border-radius: 10px;
     padding: 1.5rem 2rem;
     margin: 0.5rem;
     transition: background-color 0.3s;
+    text-align: center;
+}
+
+.terms {
+    background: #201f29c0;
+    width: 80%;
+    border-radius: 10px;
+    padding: 1.5rem 2rem;
+    margin: 0.5rem;
+    transition: background-color 0.3s;
+    text-align: center;
+}
+
+.nocontainer-settings {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    right: 0;
+    width: 80%;
+    height: calc(100% - 26px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease-in-out;
+    display: none;
+}
+
+.nosettings-elements-box {
+    background: #201f29c0;
+    width: 80%;
+    border-radius: 10px;
+    padding: 1.5rem 2rem;
+    margin: 0.5rem;
+    transition: background-color 0.3s;
+    text-align: center;
+    display: none;
 }
 
 .setting-text {
@@ -323,6 +375,7 @@
     border-radius: 15px;
     margin: 0 1rem;
     cursor: pointer;
+    color: #000000;
     transition: background-color 0.3s, transform 0.3s;
 }
 
@@ -355,30 +408,30 @@
 
 .size-btn {
     padding: 0.3rem 1rem;
-    background: radial-gradient(circle, rgb(0, 174, 255) 0%, rgb(19, 79, 189) 100%);
+    background: radial-gradient(circle, rgb(36, 36, 36) 0%, rgb(189, 163, 19) 100%);
     border-radius: 15px;
-    color: white;
+    color: black;
     margin: 0 1rem;
     cursor: pointer;
     transition: background-color 0.3s, box-shadow 0.3s;
 }
 
 .size-btn:hover {
-    box-shadow: 0 0 10px 0 #1a2691 inset, 0 0 10px 4px #1a2691;
+    box-shadow: 0 0 10px 0 #7e7e7e inset, 0 0 10px 4px #494949;
 }
 
 .size-btn-res {
     padding: 0.3rem 1rem;
-    background: radial-gradient(circle, rgb(0, 174, 255) 0%, rgb(19, 79, 189) 100%);
+    background: radial-gradient(circle, rgb(163, 163, 163) 0%, rgb(73, 73, 73) 100%);
     border-radius: 15px;
-    color: white;
+    color: black;
     margin: 0 1rem;
     cursor: pointer;
     transition: background-color 0.3s, box-shadow 0.3s;
 }
 
 .size-btn-res:hover {
-    box-shadow: 0 0 10px 0 #1a2691 inset, 0 0 10px 4px #1a2691;
+    box-shadow: 0 0 10px 0 #ffffff inset, 0 0 10px 4px #585858;
 }
 
 
@@ -399,6 +452,7 @@
     background: var(--element-color);
     border-radius: 15px;
     margin: 0 1rem;
+    color: #000000;
     cursor: pointer;
     transition: background-color 0.3s;
 }
@@ -447,9 +501,105 @@
     padding: 1rem;
     cursor: pointer;
     transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+    margin-right: 10px; 
 }
+
+.close-btn:last-child {
+    margin-right: 0;
+}
+
 
 .active-close {
     border: 4px solid var(--element-color);
     transition: border-color 0.3s;
 }
+
+
+
+/***************************************
+
+Añadido
+
+***************************************/
+
+.nosettings-elements-box {
+    background: #201f29c0;
+    width: 80%;
+    border-radius: 10px;
+    padding: 1.5rem 2rem;
+    margin: 0.5rem;
+    transition: background-color 0.3s;
+    display: none;
+}
+
+.nosetting-text {
+    font-size: 0.8rem;
+    display: none;
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * Administrador de cuentas                                                    *
+ *                                                                             *
+ ******************************************************************************/
+
+
+ .tabs-cuenta
+-btn {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 60px;
+    border-top-left-radius: 40px;
+    border-top-right-radius: 40px;
+    background: #00000000;
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+  }
+
+  .tabs-cuenta-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    backdrop-filter: blur(8px); 
+    transform: translate(-50%, -50%);
+    width: 40%;
+    height: 35%;
+    padding-bottom: 1.5rem;
+    border-radius: 20px;
+    background: #201f29c0;
+    opacity: 0;
+    pointer-events: none;
+  }
+  
+  .active-cuenta-content {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .cuentas-guardar {
+    border-radius: 5px;
+    width: 200px;
+    height: 50px;
+    margin: 16% 30%;
+    font: normal normal bold 23px/30px Poppins;
+    border-radius: 18px;
+    background: rgb(59, 59, 59);
+    background: radial-gradient(circle, rgb(82, 82, 82) 0, rgb(141, 141, 141) 2);
+    color: #ffffff;
+    cursor: pointer;
+    border-color: #a5a5a5;
+    transition: all 0.5s ease-in-out;
+  }
+  
+  .cuentas-guardar:hover {
+    box-shadow: 0 0 10px 0 #6d6d6d inset, 0 0 10px 4px #8a8a8a;
+  }
+
+  .title-settings {
+    text-align: center;
+    font: normal normal bold 35px Poppins;
+    color: #ffffff;
+    margin: 2% 0;
+  }

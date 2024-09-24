@@ -235,19 +235,7 @@ class Settings {
 
     initBtn1() {
         document.querySelector('.twitter-teambrody').addEventListener('click', () => {
-            require('electron').shell.openExternal("https://x.com/teambrodyDanOficial")
-        });
-
-        document.querySelector('.twitter-evento').addEventListener('click', () => {
-            require('electron').shell.openExternal("https://twitter.com/DesafioM2")
-        });
-
-        document.querySelector('.youtube').addEventListener('click', () => {
-            require('electron').shell.openExternal("https://www.youtube.com/channel/UCMLkJ1iGzjUwehiU-jHljlA")
-        });
-
-        document.querySelector('.twitch').addEventListener('click', () => {
-            require('electron').shell.openExternal("https://www.twitch.tv/teambrodydanoficial")
+            require('electron').shell.openExternal("https://x.com/carlitoss_sg")
         });
     }
 

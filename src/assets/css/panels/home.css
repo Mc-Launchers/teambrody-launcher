@@ -12,20 +12,15 @@
  ******************************************************************************/
 
  .status-server {
-    position: relative;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: var(--background);
-    width: 22rem;
+    position: absolute;
+    width: 15rem;
     height: 3rem;
     color: var(--color);
-    border-radius: 33px;
-    margin-top: 3rem;
     padding: 1rem;
+    left: 505px;
+    top: 4%;
     text-align: center;
-    box-shadow: 0 2px 40px rgba(248, 248, 248, 0.1);
-    transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+    z-index: 999;
 }
 
 .status-info.active {
@@ -47,21 +42,20 @@
 
 .server-status-name {
     font-size: 1.4rem;
+    font-family: Dosis;
     color: var(--color);
 }
 
 .server-status-text {
-    font-size: 0.6rem;
+    font-size: 0.8rem;
     color: #1AC707;
-    opacity: 0;
 }
 
-.server-status-infos .red {
+.server-status-infos2 .red {
     color: #FF0409;
 }
 
 .status-player-count {
-    background: var(--shadow);
     min-width: 3rem;
     height: 3rem;
     border-radius: 10px;
@@ -82,7 +76,6 @@
     top: 10px;
     right: 10px;
     border-radius: 15px;
-    border: solid 5px var(--background);
     background: #1AC707;
     opacity: 0;
 }
@@ -95,7 +88,7 @@
 .home-bottom {
     position: relative;
     width: 100%;
-    height: calc(100% - 80px - 8rem);
+    height: calc(100% - 80px - 0rem);
     display: flex;
 }
 
@@ -120,11 +113,36 @@
     font-size: 2rem;
     margin: 1.5rem 0;
     padding: 0.5rem 2rem;
-    border-radius: 2rem;
+    border-radius: 1rem;
     text-align: center;
-    background: var(--background-transparent);
+    background: #201f29;
     color: var(--color);
     transition: background-color 0.3s, color 0.3s;
+}
+
+.titre-terms {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+    margin: 1.5rem 0;
+    padding: 0.5rem 2rem;
+    border-radius: 1rem;
+    text-align: center;
+    color: var(--color);
+}
+
+.notitre-tab {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+    margin: 1.5rem 0;
+    padding: 0.5rem 2rem;
+    border-radius: 1rem;
+    text-align: center;
+    color: var(--color);
+    opacity: 0;
 }
 
 .news-list {
@@ -138,7 +156,6 @@
     width: 100%;
     margin: 0 0 1rem 0;
     border-radius: 10px;
-    background: var(--background-transparent);
 }
 
 .news-header {
@@ -187,77 +204,9 @@
 
 /*******************************************************************************
  *                                                                             *
- * 2K Launcher                                                                 *
+ * Content                                                                     *
  *                                                                             *
  ******************************************************************************/
-
- .launcher2k {
-    position: absolute;
-    font: normal normal bold 27px/40px Poppins;
-    letter-spacing: 0px;
-    color: #eaedf0;
-    display: flex;
-    position: absolute;
-    text-decoration: none;
-    max-width: calc(100% - 158px);
-    font-weight: 600;
-    font-size: 18px;
-    top: 22px;
-    left: 561px;
-    background-color: transparent;
-    border: none;
-    transform: translate(0, -50%);
-    overflow: hidden;
-    line-height: 25px;
-    align-items: center;
-    height: 3em;
-    text-shadow: 0 0 10px #000000, 0 0 10px;
-}
-
-#loading-icon {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 1000;
-}
-
-.popup {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 10;
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background: rgba(0, 0, 0, 0.5); 
-    text-align: center;
-}
-
-.popup-tab {
-    width: 40%;
-    padding: 15px;
-    background: #201f29a8;
-    backdrop-filter: blur(20px); 
-    border-radius: 15px;
-    z-index: 10;
-    text-align: center;
-}
-
-.popup-title {
-    text-align: center;
-    font-size: 2rem;
-    border-bottom: solid 4px var(--color);
-    margin-bottom: 1rem;
-}
-
-.popup-text {
-    font-size: 1.2rem;
-    color: white;
-}
 
  .background-video-container {
     position: fixed;
@@ -274,6 +223,61 @@
     height: 100%;
     object-fit: cover;
     object-position: center; 
+}
+
+/*******************************************************************************
+ *                                                                             *
+ * social server                                                               *
+ *                                                                             *
+ ******************************************************************************/
+
+ .social-tab {
+    position: absolute;
+    bottom: 0;
+    right: -105px;
+    top: 244px;
+    width: 15%;
+    height: calc(80% - 1rem);
+    justify-content: center;
+    margin-bottom: 1rem;
+    display: none;
+}
+
+.social-list {
+    border-radius: 10px;
+    height: 100%;
+}
+
+.social-block {
+    display: flex;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #a00303;
+    background: rgba(255, 2, 2, 0.226);
+    width: 50px;
+    height: 50px;
+    margin-bottom: 2rem;
+    border-radius: 10px;
+    font-size: 2rem;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(8px);
+}
+
+.social-block:hover {
+    background: rgb(161, 0, 0);
+    transition: 0.2s;
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+}
+
+.social-block .icon-social {
+    pointer-events: none;
+    background-repeat: no-repeat;
+    height: 55%;
+    width: 55%;
+    filter: var(--svg-color);
 }
 
 /*******************************************************************************
@@ -299,24 +303,29 @@
     margin: 0 1.5rem;
 }
 
+
 .player-head {
-    display: none;
     position: relative;
-    right: -1126px;
-    width: 25px;
-    top: -5px;
+    right: -9px;
+    width: 26px;
+    top: -238px;
     height: 25px;
     border-style: solid;
+    image-rendering: pixelated;
     color: transparent;
-    background-position: center;
     background-size: cover;
     padding: 12px 12px;
     background-repeat: no-repeat;
-    border-top-right-radius: 20px;
-    border-bottom-right-radius: 20px;
-    border-top-left-radius: 20px;
-    border-bottom-left-radius: 20px;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: transform 0.2s;
 }
+
+.player-head:hover {
+    transform: scale(1.1);
+}
+
+
 
 .player-menu {
     color: var(--element-color);
@@ -341,32 +350,29 @@
     height: 50px;
     border-style: solid;
     border-width: 1px;
-    top: 5;
-    border-color: #00f7ff;
-    background-color: rgba(0, 113, 165, 0.185);
+    top: -9px;
+    left: -25px;
+    border-color: #ffffff;
+    background-color: rgba(80, 80, 80, 0.185);
     font: normal normal bold 20px/25px Trebuchet MS;
     text-align: center;
-    color: #ffffff; /* Cambiado a color azul */
+    color: #ffffff;
     border-top-right-radius: 20px;
     border-bottom-right-radius: 20px;
     border-top-left-radius: 20px;
     border-bottom-left-radius: 20px;
     padding: 10px;
     transition: 0.2s;
-    box-shadow: 0px 0px 3px #002ba3;
+    backdrop-filter: blur(8px);
 }
 
 .play-btn:hover {
     color: #fff;
-    background: rgb(0, 63, 121);
+    background: rgb(102, 102, 102);
     letter-spacing: 2px;
     transition: 0.2s;
     cursor: pointer;
-}
-
-
-.play-btn:hover::before {
-    opacity: 1;
+    backdrop-filter: blur(8px);
 }
 
 
@@ -374,34 +380,34 @@
     display: flex;
     align-items: center;
     position: absolute;
-    right: -61;
-    top: 5;
+    right: 679px;
+    top: -320;
     height: 25px;
     margin: 0;
     border-style: solid;
     border-width: 1px;
-    border-color: #00f7ff;
+    border-color: #ffffff;
     color: transparent;
-    background-image: url("../../images/instancia.png");
+    background-image: url(../../images/instancia.png);
+    background-color: rgba(88, 88, 88, 0.185);
     background-position: center;
     background-size: 20px 20px;
     background-repeat: no-repeat;
-    padding: 10px 14px;
-    border-top-right-radius: 20px;
-    border-bottom-right-radius: 20px;
-    border-top-left-radius: 20px;
-    border-bottom-left-radius: 20px;
+    width: 50px;
+    height: 50px;
+    margin-bottom: 1rem;
+    border-radius: 10px;
     font: normal normal bold 20px/25px Trebuchet MS;
     transition: 0.2s;
-    box-shadow: 0px 0px 3px #002ba3;
+    backdrop-filter: blur(8px);
 }
 
 .instance-select:hover {
     cursor: pointer;
     transition: 0.2s;
-    background-color: #0347c4;
+    background-color: rgb(161, 161, 161);
+    backdrop-filter: blur(8px);
 }
-
 
 
 .instance-select:before {
@@ -411,7 +417,15 @@
 
 .info-starting-game {
     display: none;
+    background-color: rgba(97, 97, 97, 0.43);
+    position: fixed;
+    border-radius: 9px;
+    width: 20%;
+    height: 10%;
     text-align: center;
+    top: 89%;
+    left: 514px;
+    backdrop-filter: blur(5px);
 }
 
 .progress-bar {
@@ -434,32 +448,30 @@
 
 .settings-btn {
     position: relative;
-    left: -753px;
-    top: 5;
-    height: 25px;
-    margin: 0;
+    right: 1193px;
+    top: -398px;
+    background-image: url(../../images/settins.png);
+    display: flex;
     border-style: solid;
     border-width: 1px;
-    border-color: #00f7ff;
-    color: transparent;
-    background-image: url("../../images/settins.png");
-    background-position: center;
-    background-size: 20px 20px;
-    background-repeat: no-repeat;
-    padding: 10px 15px;
-    border-top-right-radius: 20px;
-    border-bottom-right-radius: 20px;
-    border-top-left-radius: 20px;
-    border-bottom-left-radius: 20px;
-    font: normal normal bold 20px/25px Trebuchet MS;
-    transition: 0.2s;
-    box-shadow: 0px 0px 3px #002ba3;
+    border-color: #ffffff;
+    background-color: rgba(71, 71, 71, 0.185);
+    width: 50px;
+    height: 50px;
+    margin-bottom: 1rem;
+    border-radius: 10px;
+    font-size: 2rem;
+    cursor: pointer;
+    align-items: center;
+    backdrop-filter: blur(8px);
+    justify-content: center;
 }
 
 .settings-btn:hover {
-    cursor: pointer;
+    background: rgb(105, 105, 105);
     transition: 0.2s;
-    background-color: #0347c4;
+    backdrop-filter: blur(8px);
+    cursor: pointer;
 }
 
 .instance-popup {
@@ -467,34 +479,35 @@
     display: none;
     width: 100%;
     height: 100%;
-    background: #000000af;
+    background: #00000000;
     opacity: 1;
     z-index: 10;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
-    backdrop-filter: blur(4px);
 }
 
 .instances-tab {
     position: relative;
-    background: var(--background);
+    background: #201f29b6;
     border-radius: 10px;
     padding: 1rem 3rem;
+    right: 25%;
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(50px);
     animation: fadeInUp 0.5s ease-in-out forwards; 
+    backdrop-filter: blur(5px);
 }
 
 @keyframes fadeInUp {
     from {
         opacity: 0;
-        transform: translateY(20px); 
+        transform: translateX(0px); 
     }
     to {
-        opacity: 1;
-        transform: translateY(0); 
+        opacity: 2;
+        transform: translateX(20px); 
     }
 }
 
@@ -510,7 +523,13 @@
     border-radius: 10px;
     align-items: center;
     justify-content: center;
+    transition: transform 0.3s ease; 
 }
+
+.close-popup:hover {
+    transform: scale(1.1); 
+}
+
 
 .instances-tab p {
     margin-top: 1.5rem;
@@ -531,24 +550,29 @@
     background: var(--background-element);
     text-align: center;
     border-radius: 10px;
-    margin: 0.7rem 0;
+    margin: 0.7rem 0px;
     font-size: 1.5rem;
     cursor: pointer;
-    transition: background 0.3s, color 0.3s, transform 0.2s, box-shadow 0.3s; 
-    box-shadow: 0 0 0 0 var(--element-color); 
+    transition: background 0.3s, color 1.3s, transform 1.2s, box-shadow 2.3s;
+    box-shadow: 0 0 0 0 var(--element-color);
 }
 
 .instance-elements:hover {
     background: var(--element-color);
-    color: #fff;
+    color: #000000;
     transform: translateY(-3px);
-    box-shadow: 0 0 30px 0px #0037ad; 
+    box-shadow: 0 0 30px 0px #5c5c5c; 
 }
 
 
 .active-instance {
-    background-color: #07aac0;
+    background-color: #1a1a1a;
+    border-width: 1px;
+    border-color: #ffffff;
 }
 
 
-
+.fade-out {
+    opacity: 0;
+    transition: opacity 0.5s ease-out; 
+  }

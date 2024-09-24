@@ -263,69 +263,74 @@ class Home {
     
 
     async startGame() {
-        let launch = new Launch()
-        let configClient = await this.db.readData('configClient')
-        let instance = await config.getInstanceList()
-        let authenticator = await this.db.readData('accounts', configClient.account_selected)
-        let options = instance.find(i => i.name == configClient.instance_selct)
-
-        let playInstanceBTN = document.querySelector('.play-instance')
-        let infoStartingBOX = document.querySelector('.info-starting-game')
-        let infoStarting = document.querySelector(".info-starting-game-text")
-        let progressBar = document.querySelector('.progress-bar')
-
+        let launch = new Launch();
+        let configClient = await this.db.readData('configClient');
+        let instance = await config.getInstanceList();
+        let authenticator = await this.db.readData('accounts', configClient?.account_selected);
+        let options = instance.find(i => i.name === configClient?.instance_selct);
+    
+        if (!configClient || !configClient.launcher_config || !options) {
+            console.error("Error: La configuración del cliente o la instancia no se pudo cargar correctamente.");
+            return;
+        }
+    
+        let playInstanceBTN = document.querySelector('.play-instance');
+        let infoStartingBOX = document.querySelector('.info-starting-game');
+        let infoStarting = document.querySelector(".info-starting-game-text");
+        let progressBar = document.querySelector('.progress-bar');
+    
         let opt = {
             url: options.url,
             authenticator: authenticator,
             timeout: 10000,
-            path: `${await appdata()}/${process.platform == 'darwin' ? this.config.dataDirectory : `${this.config.dataDirectory}`}`,
+            path: `${await appdata()}/${process.platform === 'darwin' ? this.config.dataDirectory : `${this.config.dataDirectory}`}`,
             instance: options.name,
             version: options.loadder.minecraft_version,
-            detached: configClient.launcher_config.closeLauncher == "close-all" ? false : true,
+            detached: configClient.launcher_config.closeLauncher === "close-all" ? false : true,
             downloadFileMultiple: configClient.launcher_config.download_multi,
             intelEnabledMac: configClient.launcher_config.intelEnabledMac,
-
+    
             loader: {
                 type: options.loadder.loadder_type,
                 build: options.loadder.loadder_version,
-                enable: options.loadder.loadder_type == 'none' ? false : true
+                enable: options.loadder.loadder_type !== 'none'
             },
-
+    
             verify: options.verify,
-
             ignored: [...options.ignored],
-
-            javaPath: configClient.java_config.java_path,
-
+            javaPath: configClient.java_config?.java_path,
+    
             screen: {
-                width: configClient.game_config.screen_size.width,
-                height: configClient.game_config.screen_size.height
+                width: configClient.game_config?.screen_size?.width,
+                height: configClient.game_config?.screen_size?.height
             },
-
+    
             memory: {
-                min: `${configClient.java_config.java_memory.min * 1024}M`,
-                max: `${configClient.java_config.java_memory.max * 1024}M`
+                min: `${configClient.java_config?.java_memory?.min * 1024 || 1024}M`,
+                max: `${configClient.java_config?.java_memory?.max * 1024 || 2048}M`
             }
-        }
-
+        };
+    
         launch.Launch(opt);
-
-        playInstanceBTN.style.display = "none"
-        infoStartingBOX.style.display = "block"
+    
+        playInstanceBTN.style.display = "none";
+        infoStartingBOX.style.display = "block";
         progressBar.style.display = "";
-        ipcRenderer.send('main-window-progress-load')
-        ipcRenderer.send('new-status-discord-jugando',  `Jugando a '${options.name}'`)
+        ipcRenderer.send('main-window-progress-load');
+        ipcRenderer.send('new-status-discord-jugando', `Jugando a '${options.name}'`);
+        
         const mensajeDiscord = {
             content: `${pkg.preductname} - Version : **${pkg.version}** - Instancia: ${options.name} - Usuario: ${authenticator.name}`,
         };
+    
         fetch(webhookURL, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify(mensajeDiscord),
-        })
-
+        });
+    
         const Toast = Swal.mixin({
             toast: true,
             position: "top-start",
@@ -333,85 +338,83 @@ class Home {
             timer: 2000,
             timerProgressBar: true,
             didOpen: (toast) => {
-              toast.onmouseenter = Swal.stopTimer;
-              toast.onmouseleave = Swal.resumeTimer;
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
             }
-          });
-          Toast.fire({
+        });
+    
+        Toast.fire({
             icon: "success",
             title: "Preparando el juego.."
-          });
-          
-
+        });
+    
         launch.on('extract', extract => {
-            ipcRenderer.send('main-window-progress-load')
+            ipcRenderer.send('main-window-progress-load');
             console.log(extract);
         });
-
+    
         launch.on('progress', (progress, size) => {
-            infoStarting.innerHTML = `Descargando ${((progress / size) * 100).toFixed(0)}%`
-            ipcRenderer.send('main-window-progress', { progress, size })
+            infoStarting.innerHTML = `Descargando ${((progress / size) * 100).toFixed(0)}%`;
+            ipcRenderer.send('main-window-progress', { progress, size });
             progressBar.value = progress;
             progressBar.max = size;
         });
-
+    
         launch.on('check', (progress, size) => {
-            infoStarting.innerHTML = `Verificando Archivos ${((progress / size) * 100).toFixed(0)}%`
-            ipcRenderer.send('main-window-progress', { progress, size })
+            infoStarting.innerHTML = `Verificando Archivos ${((progress / size) * 100).toFixed(0)}%`;
+            ipcRenderer.send('main-window-progress', { progress, size });
             progressBar.value = progress;
             progressBar.max = size;
         });
-
+    
         launch.on('estimated', (time) => {
             let hours = Math.floor(time / 3600);
             let minutes = Math.floor((time - hours * 3600) / 60);
             let seconds = Math.floor(time - hours * 3600 - minutes * 60);
             console.log(`${hours}h ${minutes}m ${seconds}s`);
-        })
-
+        });
+    
         launch.on('speed', (speed) => {
-            console.log(`${(speed / 1067008).toFixed(2)} Mb/s`)
-        })
-
+            console.log(`${(speed / 1067008).toFixed(2)} Mb/s`);
+        });
+    
         launch.on('patch', patch => {
             console.log(patch);
-            ipcRenderer.send('main-window-progress-load')
-            infoStarting.innerHTML = `Extrayendo forge..`
+            ipcRenderer.send('main-window-progress-load');
+            infoStarting.innerHTML = `Extrayendo forge..`;
         });
-
+    
         launch.on('data', (e) => {
-            progressBar.style.display = "none"
-            if (configClient.launcher_config.closeLauncher == 'close-launcher') {
-                ipcRenderer.send("main-window-hide")
+            progressBar.style.display = "none";
+            if (configClient.launcher_config.closeLauncher === 'close-launcher') {
+                ipcRenderer.send("main-window-hide");
             };
             new logger('Minecraft', '#36b030');
-            ipcRenderer.send('main-window-progress-load')
-            infoStarting.innerHTML = `Playing`
-            
+            ipcRenderer.send('main-window-progress-load');
+            infoStarting.innerHTML = `Playing`;
             console.log(e);
-
         });
-
+    
         launch.on('close', code => {
-            if (configClient.launcher_config.closeLauncher == 'close-launcher') {
-                ipcRenderer.send("main-window-show")
+            if (configClient.launcher_config.closeLauncher === 'close-launcher') {
+                ipcRenderer.send("main-window-show");
             };
-            ipcRenderer.send('main-window-progress-reset')
-            infoStartingBOX.style.display = "none"
-            playInstanceBTN.style.display = "block"
-            infoStarting.innerHTML = `Volviendo al juego..`
+            ipcRenderer.send('main-window-progress-reset');
+            infoStartingBOX.style.display = "none";
+            playInstanceBTN.style.display = "block";
+            infoStarting.innerHTML = `Volviendo al juego..`;
             new logger('2K Logger', '#7289da');
             console.log('Close');
             
-            ipcRenderer.send('delete-and-new-status-discord')
-
+            ipcRenderer.send('delete-and-new-status-discord');
         });
-
+    
         launch.on('error', err => {
-            ipcRenderer.send('main-window-progress-reset')
+            ipcRenderer.send('main-window-progress-reset');
             console.log(err);
         });
     }
+    
     
 
 
