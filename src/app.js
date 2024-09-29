@@ -81,14 +81,14 @@ const setupDiscordRPC = () => {
     let startedAppTime = Date.now();
 
     ipcMain.on('new-status-discord', async () => {
-        client.login({ clientId: '1205553651473588294' });
+        client.login({ clientId: '1287890334780624996' });
         client.on('ready', () => {
             client.request('SET_ACTIVITY', {
                 pid: process.pid,
                 activity: {
                     details: 'En el Menú',
                     assets: {
-                        large_image: 'aurora',
+                        large_image: 'Teambrody',
                         large_text: 'Streamer'
                     },
                     instance: false,
@@ -104,7 +104,7 @@ const setupDiscordRPC = () => {
         console.log(status);
         if (client) await client.destroy();
         client = new rpc.Client({ transport: 'ipc' });
-        client.login({ clientId: '1205553651473588294' });
+        client.login({ clientId: '1287890334780624996' });
         client.on('ready', () => {
             client.request('SET_ACTIVITY', {
                 pid: process.pid,
@@ -126,14 +126,14 @@ const setupDiscordRPC = () => {
     ipcMain.on('delete-and-new-status-discord', async () => {
         if (client) client.destroy();
         client = new rpc.Client({ transport: 'ipc' });
-        client.login({ clientId: '1205553651473588294' });
+        client.login({ clientId: '1287890334780624996' });
         client.on('ready', () => {
             client.request('SET_ACTIVITY', {
                 pid: process.pid,
                 activity: {
                     details: 'En el Menú',
                     assets: {
-                        large_image: 'aurora',
+                        large_image: 'Teambrody',
                         large_text: 'Streamer'
                     },
                     instance: false,
@@ -151,7 +151,7 @@ const setupAutoUpdater = () => {
     autoUpdater.setFeedURL({
         provider: 'github',
         owner: 'Mc-Launchers',
-        repo: 'Aurora-Launcher',
+        repo: 'teambrody-launcher',
         token: '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',
     });
 
