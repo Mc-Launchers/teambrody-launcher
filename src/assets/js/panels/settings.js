@@ -234,8 +234,8 @@ class Settings {
     }
 
     initBtn1() {
-        document.querySelector('.twitter-teambrody').addEventListener('click', () => {
-            require('electron').shell.openExternal("https://x.com/carlitoss_sg")
+        document.querySelector('.carlitos-2k').addEventListener('click', () => {
+            require('electron').shell.openExternal("https://x.com/Carlitoss_sg")
         });
     }
 

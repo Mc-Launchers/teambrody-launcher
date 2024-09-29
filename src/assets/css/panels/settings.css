@@ -408,7 +408,7 @@
 
 .size-btn {
     padding: 0.3rem 1rem;
-    background: radial-gradient(circle, rgb(36, 36, 36) 0%, rgb(189, 163, 19) 100%);
+    background: radial-gradient(circle, rgb(51, 255, 0) 0%, rgb(51, 255, 0) 100%);
     border-radius: 15px;
     color: black;
     margin: 0 1rem;
