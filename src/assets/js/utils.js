@@ -1,5 +1,5 @@
 /**
- * @author ElFo2K
+ * @author Luuxis
  * @license CC-BY-NC 4.0 - https://creativecommons.org/licenses/by-nc/4.0
  */
 
@@ -14,17 +14,6 @@ import logger from './utils/logger.js';
 import popup from './utils/popup.js';
 import { skin2D } from './utils/skin.js';
 import slider from './utils/slider.js';
-
-function addHoverInfo(element, info) {
-    element.addEventListener('mouseover', () => {
-        // Puedes mostrar un tooltip o cambiar el texto en algún lugar
-        console.log(info);
-    });
-
-    element.addEventListener('mouseout', () => {
-        // Puedes revertir los cambios o cerrar el tooltip aquí si es necesario
-    });
-}
 
 async function setBackground(theme) {
     if (typeof theme == 'undefined') {
@@ -43,9 +32,9 @@ async function setBackground(theme) {
     } else if (fs.existsSync(`${__dirname}/assets/images/background/${theme ? 'dark' : 'light'}`)) {
         let backgrounds = fs.readdirSync(`${__dirname}/assets/images/background/${theme ? 'dark' : 'light'}`);
         let Background = backgrounds[Math.floor(Math.random() * backgrounds.length)];
-        background = `linear-gradient(#00000030, #00000030), url(./assets/images/background/${theme ? 'dark' : 'light'}/1.png`;
+        background = `linear-gradient(#00000030, #00000030), url(./assets/images/background/${theme ? 'dark' : 'light'}/1.png)`;
     }
-    body.style.backgroundImage = background;
+    body.style.backgroundImage = background ? background : theme ? '#000' : '#fff';
     body.style.backgroundSize = 'cover';
 }
 
@@ -70,7 +59,7 @@ async function addAccount(data) {
         <div class="profile-image" ${skin ? 'style="background-image: url(' + skin + ');"' : ''}></div>
         <div class="profile-infos">
             <div class="profile-pseudo">${data.name}</div>
-            <div class="profile-uuid">${data.uuid}</div>
+            <div class="profile-uuid"></div>
         </div>
         <div class="delete-profile" id="${data.ID}">
             <div class="icon-account-delete delete-profile-icon"></div>
@@ -94,42 +83,33 @@ async function headplayer(skinBase64) {
 }
 
 async function setStatus(opt) {
-    let nameServerElement = document.querySelector('.server-status-name');
-    let statusServerElement = document.querySelector('.server-status-text');
-    let playersOnline = document.querySelector('.status-player-count .player-count');
+    let nameServerElement = document.querySelector('.server-status-name')
+    let statusServerElement = document.querySelector('.server-status-text')
+    let playersOnline = document.querySelector('.status-player-count .player-count')
 
     if (!opt) {
-        statusServerElement.classList.add('red');
-        statusServerElement.innerHTML = `Fuera de servicio`;
-        document.querySelector('.status-player-count').classList.add('red');
-        playersOnline.innerHTML = '0';
-        
-        addHoverInfo(statusServerElement, 'Información sobre el servidor fuera de servicio');
-
-        return;
+        statusServerElement.classList.add('red')
+        statusServerElement.innerHTML = `Instancia Actual - OFF`
+        document.querySelector('.status-player-count').classList.add('red')
+        playersOnline.innerHTML = '0'
+        return
     }
 
-    let { ip, port, nameServer } = opt;
-    nameServerElement.innerHTML = nameServer;
+    let { ip, port, nameServer } = opt
+    nameServerElement.innerHTML = nameServer
     let status = new Status(ip, port);
     let statusServer = await status.getStatus().then(res => res).catch(err => err);
 
     if (!statusServer.error) {
-        statusServerElement.classList.remove('red');
-        document.querySelector('.status-player-count').classList.remove('red');
-        statusServerElement.innerHTML = `Instancia Actual - Servidor Operativo`;
-        playersOnline.innerHTML = statusServer.playersConnect;
-
-        // Agrega la funcionalidad al pasar el ratón para la información
-        addHoverInfo(statusServerElement, 'Instancia Actual - Servidor Operativo');
+        statusServerElement.classList.remove('red')
+        document.querySelector('.status-player-count').classList.remove('red')
+        statusServerElement.innerHTML = `Instancia Actual - ON`
+        playersOnline.innerHTML = statusServer.playersConnect
     } else {
-        statusServerElement.classList.add('red');
-        statusServerElement.innerHTML = `Instancia Actual - Servidor sin conexion`;
-        document.querySelector('.status-player-count').classList.add('red');
-        playersOnline.innerHTML = '0';
-
-        // Agrega la funcionalidad al pasar el ratón para la información
-        addHoverInfo(statusServerElement, 'Instancia Actual - Servidor sin conexion');
+        statusServerElement.classList.add('red')
+        statusServerElement.innerHTML = `Instancia Actual - OFF`
+        document.querySelector('.status-player-count').classList.add('red')
+        playersOnline.innerHTML = '0'
     }
 }
 
