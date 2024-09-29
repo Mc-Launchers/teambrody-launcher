@@ -1,5 +1,5 @@
 /**
- * @author ElFo2K
+ * @author Luuxis
  * @license CC-BY-NC 4.0 - https://creativecommons.org/licenses/by-nc/4.0
  */
 const { ipcRenderer } = require('electron');
@@ -15,38 +15,21 @@ class Splash {
         this.splashAuthor = document.querySelector(".splash-author");
         this.message = document.querySelector(".message");
         this.progress = document.querySelector(".progress");
-        document.addEventListener('DOMContentLoaded', () => {
-            const button = document.querySelector('#myButton');
-            if (button) {
-                button.addEventListener('click', () => {
-                    console.log('Botón clickeado');
-                });
-            } else {
-                console.error('No se encontró el elemento: #myButton');
-            }
-        
-            // Verificar si configClient y launcher_config existen
-            if (configClient && configClient.launcher_config) {
-                console.log('configClient existe:', configClient);
-            } else {
-                console.error('configClient o launcher_config no están definidos');
-            }
-        
-            // Verificar recursos
-            const img = document.createElement('img');
-            img.src = 'icon.png';
-            img.onerror = () => {
-                console.error('No se pudo cargar icon.png');
-            };
-            document.body.appendChild(img);
+        document.addEventListener('DOMContentLoaded', async () => {
+            let databaseLauncher = new database();
+            let configClient = await databaseLauncher.readData('configClient');
+            let theme = configClient?.launcher_config?.theme || "sombre"
+            let isDarkTheme = await ipcRenderer.invoke('is-dark-theme', theme).then(res => res)
+            document.body.className = isDarkTheme ? 'dark global' : 'light global';
+            if (process.platform == 'win32') ipcRenderer.send('update-window-progress-load')
+            this.startAnimation()
         });
-        
     }
 
 	async startAnimation() {
 		let splashes = [{
-			"message": "Conectando con el servidor",
-			"author": "teambrody"
+			"message": "  ",
+			"author": "Aurora Studio"
 		}, ]
         let splash = splashes[Math.floor(Math.random() * splashes.length)];
         this.splashMessage.textContent = splash.message;
@@ -76,7 +59,7 @@ class Splash {
 
 
         ipcRenderer.on('updateAvailable', () => {
-            this.setStatus(`Actualizando.. `);
+            this.setStatus(`Actualizando el launcher, espera un momento... `);
             this.toggleProgress();
             ipcRenderer.send('start-update');
         })
@@ -87,7 +70,7 @@ class Splash {
         })
 
         ipcRenderer.on('update-not-available', () => {
-            console.error("Tienes la version mas reciente.");
+            this.setStatus("Tienes la version mas reciente.");
             this.maintenanceCheck();
         })
     }
@@ -109,10 +92,10 @@ class Splash {
     }
 
     shutdown(text) {
-        this.setStatus(`${text}<br>Cerrando 5s`);
+        this.setStatus(`${text}<br>`);
         let i = 4;
         setInterval(() => {
-            this.setStatus(`${text}<br>Cerrando ${i--}s`);
+            this.setStatus(`${text}<br>${i--}s`);
             if (i < 0) ipcRenderer.send('update-window-close');
         }, 1000);
     }

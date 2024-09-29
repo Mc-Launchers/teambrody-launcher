@@ -1,7 +1,7 @@
 {
     "name": "teambrody",
     "preductname": "teambrody",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "description": "Launcher para eventos de teambrody.",
     "main": "src/app.js",
     "author": {
