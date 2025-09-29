@@ -1,7 +1,7 @@
 {
     "name": "teambrody",
     "preductname": "Team Brody",
-    "version": "1.0.9",
+    "version": "2.0.0",
     "description": "Launcher para eventos de teambrody.",
     "main": "src/app.js",
     "author": {
@@ -9,7 +9,7 @@
         "email": "contacto@2kstudio.com",
         "url": "https://github.com/Carlitoss_sg"
     },
-    "url": "http://npriv.boxmineworld.com:4000/base/",
+    "url": "http://nia.boxmine.xyz:4012/base",
     "engines": {
         "node": "^18.x.x"
     },

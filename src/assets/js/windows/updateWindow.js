@@ -1,7 +1,3 @@
-/**
- * @author Luuxis
- * @license CC-BY-NC 4.0 - https://creativecommons.org/licenses/by-nc/4.0
- */
 
 "use strict";
 const { app, BrowserWindow, Menu } = require("electron");
@@ -31,12 +27,14 @@ function createWindow() {
         height: 720,
         resizable: false,
         icon: `./src/assets/images/icon.${os.platform() === "win32" ? "ico" : "png"}`,
-        transparent: os.platform() === 'win32',
+        transparent: true,
         frame: false,
         show: false,
         webPreferences: {
             contextIsolation: false,
-            nodeIntegration: true
+            nodeIntegration: true,
+            scrollBounce: true,
+            overlayScrollbars: true,
         },
     });
     Menu.setApplicationMenu(null);

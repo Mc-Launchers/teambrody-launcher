@@ -1,7 +1,3 @@
-/**
- * @author ElFo2K
- * @license CC-BY-NC 4.0 - https://creativecommons.org/licenses/by-nc/4.0
- */
 
 const { ipcRenderer } = require('electron');
 
@@ -17,7 +13,7 @@ export default class popup {
     openPopup(info) {
         this.popup.style.display = 'flex';
         if (info.background == false) this.popup.style.background = 'none';
-        else this.popup.style.background = '#42424200'
+        else this.popup.style.background = '#000000b3'
         this.popupTitle.innerHTML = info.title;
         this.popupContent.style.color = info.color ? info.color : '#e21212';
         this.popupContent.innerHTML = info.content;

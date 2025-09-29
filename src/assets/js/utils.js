@@ -1,10 +1,7 @@
-/**
- * @author Luuxis
- * @license CC-BY-NC 4.0 - https://creativecommons.org/licenses/by-nc/4.0
- */
 
 const { ipcRenderer } = require('electron')
-const { Status } = require('minecraft-java-core')
+// const { Status } = require('minecraft-java-core')
+const { Status } = require('mc-java-core-333');
 const fs = require('fs');
 const pkg = require('../package.json');
 
@@ -79,11 +76,12 @@ async function accountSelect(data) {
 
 async function headplayer(skinBase64) {
     let skin = await new skin2D().creatHeadTexture(skinBase64);
-    document.querySelector(".player-head").style.backgroundImage = `url(${skin})`;
+    document.querySelector(".settings-btn").style.backgroundImage = `url(${skin})`;
+    document.querySelector(".lobby-settings-btn").style.backgroundImage = `url(${skin})`;
 }
 
 async function setStatus(opt) {
-    let nameServerElement = document.querySelector('.server-status-name')
+    let nameServerElement = document.querySelector('.info-starting-game-title')
     let statusServerElement = document.querySelector('.server-status-text')
     let playersOnline = document.querySelector('.status-player-count .player-count')
 
@@ -113,6 +111,32 @@ async function setStatus(opt) {
     }
 }
 
+async function hashObject(obj) {
+    const str = JSON.stringify(obj);
+    let hashHex = await stringToHash(str);
+    return hashHex;
+}
+
+async function stringToHash(inputString, algorithm = 'SHA-256') {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(inputString);
+
+    const hashBuffer = await crypto.subtle.digest(algorithm, data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    return hashHex;
+}
+
+// async function simpleHash(str) {
+//     let hash = 0;
+//     for (let i = 0; i < str.length; i++) {
+//         let char = str.charCodeAt(i);
+//         hash = ((hash << 5) - hash) + char;
+//         hash |= 0;
+//     }
+//     return hash;
+// }
+
 
 export {
     appdata as appdata,
@@ -127,5 +151,7 @@ export {
     accountSelect as accountSelect,
     slider as Slider,
     pkg as pkg,
-    setStatus as setStatus
+    setStatus as setStatus,
+    hashObject as hashObject,
+    stringToHash as stringToHash,
 }

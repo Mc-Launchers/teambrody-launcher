@@ -1,16 +1,19 @@
 /**
- * @author 2K 
+ * @author 2K Studio
  * @license CC-BY-NC 4.0 - https://creativecommons.org/licenses/by-nc/4.0
  */
 
-const { app, ipcMain, nativeTheme } = require('electron');
-const { Microsoft } = require('minecraft-java-core');
-const { autoUpdater } = require('electron-updater');
+const { app, ipcMain, nativeTheme, shell } = require('electron');
+// const { Microsoft } = require('minecraft-java-core');
+const { Microsoft } = require('mc-java-core-333');
+const { autoUpdater } = require('electron-updater')
 const path = require('path');
 const fs = require('fs');
 const UpdateWindow = require("./assets/js/windows/updateWindow.js");
 const MainWindow = require("./assets/js/windows/mainWindow.js");
 const rpc = require('discord-rpc');
+const os = require('os');
+const { exec, execSync } = require('child_process');
 
 let dev = process.env.NODE_ENV === 'dev';
 
@@ -37,36 +40,32 @@ if (!app.requestSingleInstanceLock()) {
 
 const setupIpcMainHandlers = () => {
     ipcMain.on('main-window-open', MainWindow.createWindow);
-    ipcMain.on('main-window-dev-tools', () => MainWindow.getWindow().webContents.openDevTools({ mode: 'detach' }));
-    ipcMain.on('main-window-dev-tools-close', () => MainWindow.getWindow().webContents.closeDevTools());
+    ipcMain.on('main-window-dev-tools', () => MainWindow.getWindow()?.webContents.openDevTools({ mode: 'undocked', activate: false}));
+    ipcMain.on('main-window-dev-tools-close', () => MainWindow.getWindow()?.webContents.closeDevTools());
     ipcMain.on('main-window-close', MainWindow.destroyWindow);
-    ipcMain.on('main-window-reload', () => MainWindow.getWindow().reload());
-    ipcMain.on('main-window-progress', (event, options) => MainWindow.getWindow().setProgressBar(options.progress / options.size));
-    ipcMain.on('main-window-progress-reset', () => MainWindow.getWindow().setProgressBar(-1));
-    ipcMain.on('main-window-progress-load', () => MainWindow.getWindow().setProgressBar(2));
-    ipcMain.on('main-window-minimize', () => MainWindow.getWindow().minimize());
+    ipcMain.on('main-window-reload', () => MainWindow.getWindow()?.reload());
+    ipcMain.on('main-window-progress', (event, options) => MainWindow.getWindow()?.setProgressBar(options.progress / options.size));
+    ipcMain.on('main-window-progress-reset', () => MainWindow.getWindow()?.setProgressBar(-1));
+    ipcMain.on('main-window-progress-load', () => MainWindow.getWindow()?.setProgressBar(2));
+    ipcMain.on('main-window-minimize', () => MainWindow.getWindow()?.minimize());
     ipcMain.on('main-window-maximize', () => {
         const window = MainWindow.getWindow();
-        if (window.isMaximized()) {
-            window.unmaximize();
-        } else {
-            window.maximize();
-        }
+        window.isMaximized() ? window.unmaximize() : window.maximize();
     });
-    ipcMain.on('main-window-hide', () => MainWindow.getWindow().hide());
-    ipcMain.on('main-window-show', () => MainWindow.getWindow().show());
+    ipcMain.on('main-window-hide', () => MainWindow.getWindow()?.hide());
+    ipcMain.on('main-window-show', () => MainWindow.getWindow()?.show());
 
     ipcMain.on('update-window-close', UpdateWindow.destroyWindow);
-    ipcMain.on('update-window-dev-tools', () => UpdateWindow.getWindow().webContents.openDevTools({ mode: 'detach' }));
-    ipcMain.on('update-window-progress', (event, options) => UpdateWindow.getWindow().setProgressBar(options.progress / options.size));
-    ipcMain.on('update-window-progress-reset', () => UpdateWindow.getWindow().setProgressBar(-1));
-    ipcMain.on('update-window-progress-load', () => UpdateWindow.getWindow().setProgressBar(2));
+    ipcMain.on('update-window-dev-tools', () => UpdateWindow.getWindow()?.webContents.openDevTools({ mode: 'undocked', activate: false}));
+    ipcMain.on('update-window-progress', (event, options) => UpdateWindow.getWindow()?.setProgressBar(options.progress / options.size));
+    ipcMain.on('update-window-progress-reset', () => UpdateWindow.getWindow()?.setProgressBar(-1));
+    ipcMain.on('update-window-progress-load', () => UpdateWindow.getWindow()?.setProgressBar(2));
 
     ipcMain.handle('path-user-data', () => app.getPath('userData'));
     ipcMain.handle('appData', () => app.getPath('appData'));
 
     ipcMain.handle('Microsoft-window', async (_, client_id) => {
-        return await new Microsoft(client_id).getAuth();
+        return await new Microsoft(client_id, false).getAuth('', '', false);
     });
 
     ipcMain.handle('is-dark-theme', (_, theme) => {
@@ -88,7 +87,7 @@ const setupDiscordRPC = () => {
                 activity: {
                     details: 'En el Menú',
                     assets: {
-                        large_image: 'Teambrody',
+                        large_image: 'logoTeambrody',
                         large_text: 'Streamer'
                     },
                     instance: false,
@@ -133,7 +132,7 @@ const setupDiscordRPC = () => {
                 activity: {
                     details: 'En el Menú',
                     assets: {
-                        large_image: 'Teambrody',
+                        large_image: 'logoTeambrody',
                         large_text: 'Streamer'
                     },
                     instance: false,
@@ -147,26 +146,47 @@ const setupDiscordRPC = () => {
 };
 
 const setupAutoUpdater = () => {
-    autoUpdater.autoDownload = false;
-    autoUpdater.setFeedURL({
-        provider: 'github',
-        owner: 'Mc-Launchers',
-        repo: 'teambrody-launcher',
-        token: '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',
-    });
-
-    ipcMain.handle('update-app', async () => {
+    autoUpdater.logger = require('electron-log');
+    // autoUpdater.logger.transports.file.level = 'debug';
+    const arch = os.arch();
+    autoUpdater.logger.info(`Platform: ${os.platform()}`);
+    autoUpdater.logger.info(`Arch: ${arch}`);
+    switch (arch) {
+        case 'x64':
+        case 'arm64':
+            break;
+        case 'ia32':
+        default:
+            let err = `Unsupported architecture: ${arch}`;
+            autoUpdater.logger.error(err);
+            UpdateWindow.getWindow()?.webContents.send('update-error', err);
+            break;
+    }
+    autoUpdater.autoDownload = true;
+    
+    ipcMain.handle('update-app', async (_, token) => {
+        if (!token) {
+            autoUpdater.logger.error('It was not possible to get the github token.');
+            UpdateWindow.getWindow()?.webContents.send('update-error', 'No se pudo obtener el token de Github.');
+            return;
+        }
+        autoUpdater.setFeedURL({
+            provider: 'github',
+            owner: 'Mc-Launchers',
+            repo: 'teambrody-launcher',
+            private: true,
+            token
+        });
         try {
-            const res = await autoUpdater.checkForUpdates();
-            return res;
+            const { updateInfo } = await autoUpdater.checkForUpdates();
+            return updateInfo;
         } catch (error) {
             return { error: true, message: error.message };
         }
     });
 
     autoUpdater.on('update-available', () => {
-        const updateWindow = UpdateWindow.getWindow();
-        if (updateWindow) updateWindow.webContents.send('updateAvailable');
+        UpdateWindow.getWindow()?.webContents.send('updateAvailable');
     });
 
     ipcMain.on('start-update', () => {
@@ -174,17 +194,62 @@ const setupAutoUpdater = () => {
     });
 
     autoUpdater.on('update-not-available', () => {
-        const updateWindow = UpdateWindow.getWindow();
-        if (updateWindow) updateWindow.webContents.send('update-not-available');
+        UpdateWindow.getWindow()?.webContents.send('update-not-available');
     });
 
     autoUpdater.on('update-downloaded', () => {
-        autoUpdater.quitAndInstall();
+        autoUpdater.quitAndInstall(true, true);
     });
 
     autoUpdater.on('download-progress', (progress) => {
+        UpdateWindow.getWindow()?.webContents.send('download-progress', progress);
+    });
+
+    autoUpdater.on('error', (error) => {
+        autoUpdater.logger.error('Error en el auto-updater:', error);
         const updateWindow = UpdateWindow.getWindow();
-        if (updateWindow) updateWindow.webContents.send('download-progress', progress);
+        const message = error.message || '';
+
+        if (!(process.platform === 'darwin' && (message.includes('code signature') || /did not pass validation/.test(message)))) {
+            updateWindow?.webContents.send('update-error', error);
+            return;
+        }
+
+        updateWindow?.webContents.send('unzip-start');
+        autoUpdater.logger.warn('Fallback: extrayendo con ditto y limpiando cuarentena...');
+
+        const cacheDir = path.join(autoUpdater.app.baseCachePath, `${autoUpdater.app.name}-updater`, 'pending');
+        try {
+            const zipFile = fs.readdirSync(cacheDir).find((file) => file.endsWith('.zip'));
+            if (!zipFile) throw new Error('No zip file found in cache directory');
+
+            const zipPath = path.join(cacheDir, zipFile);
+            const destApp = `/Applications/${autoUpdater.app.name}.app`;
+
+            if (fs.existsSync(destApp)) execSync(`rm -rf "${destApp}`);
+
+            autoUpdater.logger.info(`Extrayendo: ${zipFile} (${zipPath}) a ${destApp}`);
+            exec(`ditto -xk "${zipPath}" "${destApp}"`, (err) => {
+                if (err) throw err;
+
+                execSync(`xattr -dr com.apple.qurantine "${destApp}`);
+                autoUpdater.logger.info('Extracción y limpieza completadas.');
+
+                app.relaunch();
+                app.exit(0);
+            });
+        } catch (err) {
+            autoUpdater.logger.error('Error en fallback al descomprimir:', err);
+            const enhancedError = {
+                ...err,
+                extraInfo: 'Instalación manual es requerida',
+            };
+            autoUpdater.logger.error(enhancedError.extraInfo);
+            updateWindow?.webContents.send('unzip-error', enhancedError);
+
+            const shellError = shell.openPath(cacheDir);
+            if (shellError) autoUpdater.logger.error(shellError);
+        }
     });
 };
 
@@ -193,3 +258,13 @@ setupDiscordRPC();
 setupAutoUpdater();
 
 app.on('window-all-closed', () => app.quit());
+
+app.on('browser-window-created', (event, win) => {
+    win.webContents.on('before-input-event', (event, input) => {
+        if ((input.control || input.meta) && input.shift && input.key.toLowerCase() === 'b') {
+            event.preventDefault();
+            win.webContents.closeDevTools();
+            win.webContents.openDevTools({ mode: 'undocked', activate: false});
+        }
+    })
+})

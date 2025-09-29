@@ -66,7 +66,7 @@ class Index {
                 generateUpdatesFilesForAllChannels: false,
                 appId: preductname,
                 productName: preductname,
-                copyright: 'Copyright © 2023-2024 ElFo2K',
+                copyright: 'Copyright © 2024 Carlitos_sg',
                 artifactName: "${productName}-${os}-${arch}.${ext}",
                 extraMetadata: { main: 'app/app.js' },
                 files: ["app/**/*", "package.json", "LICENSE.md"],
@@ -85,46 +85,31 @@ class Index {
                     }]
                 },
                 nsis: {
-                    oneClick: true,
+                    oneClick: false,
                     allowToChangeInstallationDirectory: false,
                     createDesktopShortcut: true,
-                    runAfterFinish: true
+                    runAfterFinish: true,
+                    license: 'LICENSE.md'
                 },
                 mac: {
                     icon: "./app/assets/images/icon.icns",
                     category: "public.app-category.games",
-                    identity: null,
-                    target: [{
-                        target: "dmg",
-                        arch: "x64"
-                    },
-                    {
-                        target: "zip",
-                        arch: "x64"
-                    }, {
-                        target: "dmg",
-                        arch: "arm64"
-                    },
-                    {
-                        target: "zip",
-                        arch: "arm64"
-                    }]
+                    // identity: null,
+                    target: [
+                        { target: "dmg", arch: "x64" },
+                        { target: "zip", arch: "x64" },
+                        { target: "dmg", arch: "arm64" },
+                        { target: "zip", arch: "arm64" }
+                    ]
                 },
                 linux: {
                     icon: "./app/assets/images/icon.png",
-                    target: [{
-                        target: "AppImage",
-                        arch: "x64"
-                    }, {
-                        target: "deb",
-                        arch: "x64"
-                    }, {
-                        target: "tar.gz",
-                        arch: "x64"
-                    }, {
-                        target: "zip",
-                        arch: "x64"
-                    }]
+                    target: [
+                        { target: "AppImage", arch: "x64" },
+                        { target: "deb", arch: "x64" },
+                        { target: "tar.gz", arch: "x64" },
+                        { target: "zip", arch: "x64" }
+                    ]
                 }
             }
         }).then(() => {

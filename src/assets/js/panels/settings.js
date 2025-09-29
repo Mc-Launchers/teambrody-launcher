@@ -1,10 +1,6 @@
-/**
- * @author ElFo2K
- * @license CC-BY-NC 4.0 - https://creativecommons.org/licenses/by-nc/4.0
- */
 
 import { changePanel, accountSelect, database, Slider, config, setStatus, popup, appdata, setBackground } from '../utils.js'
-const { ipcRenderer } = require('electron');
+const { ipcRenderer, shell } = require('electron');
 const os = require('os');
 const Swal = require('sweetalert2');
 
@@ -44,7 +40,7 @@ class Settings {
 
                     if (activeContainerSettings) activeContainerSettings.classList.toggle('active-container-settings');
                     document.querySelector(`#account-tab`).classList.add('active-container-settings');
-                    return changePanel('home')
+                    return changePanel('lobby')
                 }
 
                 if (activeSettingsBTN) activeSettingsBTN.classList.toggle('active-settings-BTN2');
@@ -70,7 +66,7 @@ class Settings {
 
                     if (activeContainerSettings) activeContainerSettings.classList.toggle('active-container-settings');
                     document.querySelector(`#account-tab`).classList.add('active-container-settings');
-                    return changePanel('home')
+                    return changePanel('lobby')
                 }
 
                 if (activeSettingsBTN) activeSettingsBTN.classList.toggle('active-settings-BTN2');
@@ -121,7 +117,7 @@ class Settings {
 
                     let configClient = await this.db.readData('configClient');
 
-                    if (configClient.account_selected == id) {
+                    if (configClient?.account_selected == id) {
                         let allAccounts = await this.db.readAllData('accounts');
                         configClient.account_selected = allAccounts[0].ID
                         accountSelect(allAccounts[0]);
@@ -201,7 +197,7 @@ class Settings {
         let javaPathText = document.querySelector(".java-path-txt")
 
         let configClient = await this.db.readData('configClient')
-        let javaPath = configClient?.java_config?.java_path || 'No toques este parametro si no sabes como funciona.';
+        let javaPath = configClient?.java_config?.java_path || 'Utilizando javaw integrado';
         let javaPathInputTxt = document.querySelector(".java-path-input-text");
         let javaPathInputFile = document.querySelector(".java-path-input-file");
         javaPathInputTxt.value = javaPath;
@@ -227,7 +223,7 @@ class Settings {
 
         document.querySelector(".java-path-reset").addEventListener("click", async () => {
             let configClient = await this.db.readData('configClient')
-            javaPathInputTxt.value = 'Si no sabes cambiar este parametro no lo cambies';
+            javaPathInputTxt.value = 'Utilizando javaw integrado';
             configClient.java_config.java_path = null
             await this.db.updateData('configClient', configClient);
         });
@@ -237,7 +233,7 @@ class Settings {
         document.querySelector('.carlitos-2k').addEventListener('click', () => {
             require('electron').shell.openExternal("https://x.com/Carlitoss_sg")
         });
-    }
+   }
 
     async resolution() {
         let configClient = await this.db.readData('configClient')
@@ -347,7 +343,6 @@ class Settings {
                 activeClose?.classList.toggle('active-close');
 
                 let configClient = await this.db.readData('configClient')
-
                 if (e.target.classList.contains('close-launcher')) {
                     e.target.classList.toggle('active-close');
                     configClient.launcher_config.closeLauncher = "close-launcher";
