@@ -175,7 +175,7 @@ const setupAutoUpdater = () => {
         autoUpdater.setFeedURL({
             provider: 'github',
             owner: 'Mc-Launchers',
-            repo: 'Alondrissa-client',
+            repo: 'teambrody-launcher',
             private: true,
             token
         });
