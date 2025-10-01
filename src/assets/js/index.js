@@ -1,6 +1,7 @@
-import { logger } from './utils.js';
-new logger('Updater', '#1fd449');
-
+/**
+ * @author Luuxis
+ * @license CC-BY-NC 4.0 - https://creativecommons.org/licenses/by-nc/4.0
+ */
 const { ipcRenderer } = require('electron');
 import { config, database } from './utils.js';
 
@@ -28,7 +29,7 @@ class Splash {
 	async startAnimation() {
 		let splashes = [{
 			"message": "  ",
-			"author": "Teambrody Launcher"
+			"author": "TeamBrody"
 		}, ]
         let splash = splashes[Math.floor(Math.random() * splashes.length)];
         this.splashMessage.textContent = splash.message;
@@ -50,19 +51,10 @@ class Splash {
         if (dev) return this.startLauncher();
         this.setStatus(`Revisando version...`);
 
-        const printEnhancedError = (error) => {
-            return (error.message || error) + (error.extraInfo ? `<br><h2>${error.extraInfo}</h2>` : '');
-        };
-
-        const token = await config.GetConfig().then(res => res.gh_token || '').catch(err => {
-            console.error(`Error al obtener el token: ${printEnhancedError(err)}`);
-            return '';
-        });
-
-        ipcRenderer.invoke('update-app', token).then(update => {
+        ipcRenderer.invoke('update-app').then(update => {
             console.log(update);
         }).catch(err => {
-            return this.shutdown(`Error al buscar actualizaciones.<br>${printEnhancedError(err)}`);
+            return this.shutdown(`Error al buscar actualizaciones.`);
         });
 
 
@@ -81,21 +73,6 @@ class Splash {
             this.setStatus("Tienes la version mas reciente.");
             this.maintenanceCheck();
         })
-
-        ipcRenderer.on('update-error', (event, error) => {
-            console.error(`Error en el auto-updater: ${error}`);
-            this.setStatus(`Error al actualizar.<br>${printEnhancedError(error)}`);
-        });
-
-        ipcRenderer.on('unzip-start', () => {
-            console.warn(`Descomprimiendo localmente...`);
-            this.setStatus(`Intentando descomprimir localmente...`);
-        });
-
-        ipcRenderer.on('unzip-error', (event, error) => {
-            console.error(`Error al descomprimir: ${error}`);
-            this.shutdown(`Error al descomprimir.<br>${printEnhancedError(error)}`);
-        });
     }
 
     async maintenanceCheck() {
@@ -116,7 +93,7 @@ class Splash {
 
     shutdown(text) {
         this.setStatus(`${text}<br>`);
-        let i = 10;
+        let i = 4;
         setInterval(() => {
             this.setStatus(`${text}<br>${i--}s`);
             if (i < 0) ipcRenderer.send('update-window-close');
@@ -141,9 +118,9 @@ function sleep(ms) {
     return new Promise(r => setTimeout(r, ms));
 }
 
-// document.addEventListener("keydown", (e) => {
-//     if (e.ctrlKey && e.shiftKey && e.keyCode == 73 || e.keyCode == 123) {
-//         ipcRenderer.send("update-window-dev-tools");
-//     }
-// })
+document.addEventListener("keydown", (e) => {
+    if (e.ctrlKey && e.shiftKey && e.keyCode == 73 || e.keyCode == 123) {
+        ipcRenderer.send("update-window-dev-tools");
+    }
+})
 new Splash();

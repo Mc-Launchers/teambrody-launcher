@@ -3,7 +3,6 @@
     align-items: center;
     justify-content: center;
     height: 100%;
-    top: -60%;
     backdrop-filter: blur(5px);
 }
 
@@ -48,7 +47,6 @@
 .cancel {
     background: var(--element-color);
     color: #000000;
-    top: 50%;
     border: none;
     border-radius: 30px;
     padding: 0.5rem 2rem;
@@ -59,15 +57,14 @@
     backdrop-filter: blur(8%);
     height: 28%;
     width: 63%;
-    left: 105px;
     position: absolute;
 }
 
 .connect:hover,
 .cancel:hover {
-    background: #93f8ff; 
+    background: #578499; 
     color: #fff;
-    box-shadow: 0 0 40px rgba(0, 93, 136, 0.7);
+    box-shadow: 0 0 40px rgba(35, 119, 153, 0.7);
     height: 28%;
     width: 63%;
     position: absolute;
@@ -94,7 +91,7 @@
 .input-login .email:hover,
 .input-login .password:hover,
 .A2F:hover {
-    border-color: #a5fffb; 
+    border-color: #4886a3; 
 }
 
 .logomicro {

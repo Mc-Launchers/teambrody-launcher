@@ -1,3 +1,7 @@
+/**
+ * @author Luuxis
+ * @license CC-BY-NC 4.0 - https://creativecommons.org/licenses/by-nc/4.0
+ */
 
 import { changePanel, accountSelect, database, Slider, config, setStatus, popup, appdata, setBackground } from '../utils.js'
 const { ipcRenderer, shell } = require('electron');
@@ -40,7 +44,7 @@ class Settings {
 
                     if (activeContainerSettings) activeContainerSettings.classList.toggle('active-container-settings');
                     document.querySelector(`#account-tab`).classList.add('active-container-settings');
-                    return changePanel('lobby')
+                    return changePanel('home')
                 }
 
                 if (activeSettingsBTN) activeSettingsBTN.classList.toggle('active-settings-BTN2');
@@ -66,7 +70,7 @@ class Settings {
 
                     if (activeContainerSettings) activeContainerSettings.classList.toggle('active-container-settings');
                     document.querySelector(`#account-tab`).classList.add('active-container-settings');
-                    return changePanel('lobby')
+                    return changePanel('home')
                 }
 
                 if (activeSettingsBTN) activeSettingsBTN.classList.toggle('active-settings-BTN2');
@@ -117,7 +121,7 @@ class Settings {
 
                     let configClient = await this.db.readData('configClient');
 
-                    if (configClient?.account_selected == id) {
+                    if (configClient.account_selected == id) {
                         let allAccounts = await this.db.readAllData('accounts');
                         configClient.account_selected = allAccounts[0].ID
                         accountSelect(allAccounts[0]);
@@ -230,10 +234,11 @@ class Settings {
     }
 
     initBtn1() {
+
         document.querySelector('.carlitos-2k').addEventListener('click', () => {
             require('electron').shell.openExternal("https://x.com/Carlitoss_sg")
         });
-   }
+    }
 
     async resolution() {
         let configClient = await this.db.readData('configClient')
@@ -343,6 +348,7 @@ class Settings {
                 activeClose?.classList.toggle('active-close');
 
                 let configClient = await this.db.readData('configClient')
+
                 if (e.target.classList.contains('close-launcher')) {
                     e.target.classList.toggle('active-close');
                     configClient.launcher_config.closeLauncher = "close-launcher";

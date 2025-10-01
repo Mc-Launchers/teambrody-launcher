@@ -1,21 +1,23 @@
-import { logger } from './utils.js';
-new logger('LAUNCHER', '#7289da');
+/**
+ * @author Luuxis
+ * @license CC-BY-NC 4.0 - https://creativecommons.org/licenses/by-nc/4.0
+ */
 
 import Login from './panels/login.js';
 import Home from './panels/home.js';
-import Lobby from './panels/lobby.js';
 import Settings from './panels/settings.js';
 
-import { config, changePanel, database, popup, setBackground, accountSelect, addAccount, pkg } from './utils.js';
-// const { AZauth, Mojang, Microsoft } = require('minecraft-java-core');
-const { AZauth, Mojang, Microsoft } = require('mc-java-core-333');
+
+import { logger, config, changePanel, database, popup, setBackground, accountSelect, addAccount, pkg } from './utils.js';
+const { AZauth, Microsoft, Mojang } = require('minecraft-java-core');
+
 
 const { ipcRenderer } = require('electron');
 const fs = require('fs');
 
 class Launcher {
     async init() {
-        // this.initLog();
+        this.initLog();
         console.log('Iniciando...');
         this.shortcut()
         await setBackground()
@@ -24,18 +26,18 @@ class Launcher {
         if (await this.config.error) return this.errorConnect()
         this.db = new database();
         await this.initConfigClient();
-        this.createPanels(Login, Home, Lobby, Settings);
+        this.createPanels(Login, Home, Settings);
         this.startLauncher();
     }
 
     initLog() {
-        // document.addEventListener('keydown', e => {
-        //     if (e.ctrlKey && e.shiftKey && e.keyCode == 73 || e.keyCode == 123) {
-        //         ipcRenderer.send('main-window-dev-tools-close');
-        //         ipcRenderer.send('main-window-dev-tools');
-        //     }
-        // })
-        new logger('LAUNCHER', '#7289da')
+        document.addEventListener('keydown', e => {
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 73 || e.keyCode == 123) {
+                ipcRenderer.send('main-window-dev-tools-close');
+                ipcRenderer.send('main-window-dev-tools');
+            }
+        })
+        new logger('LOGS', '#7289da')
     }
 
     shortcut() {
@@ -49,8 +51,8 @@ class Launcher {
 
     errorConnect() {
         new popup().openPopup({
-            title: this.config.error.code,
-            content: this.config.error.message,
+            title: 'Error al conectarse',
+            content: 'Se produjo un error general en el launcher, contacta a Carlitos_sg para solucionar este problema.',
             color: 'red',
             exit: true,
             options: true
@@ -76,36 +78,32 @@ class Launcher {
     async initConfigClient() {
         console.log('Iniciando la configuracion del Launcher...')
         let configClient = await this.db.readData('configClient')
-        let defaultConfig = {
-            account_selected: null,
-            instance_selct: null,
-            java_config: {
-                java_path: null,
-                java_memory: {
-                    min: 5,
-                    max: 7
-                }
-            },
-            game_config: {
-                screen_size: {
-                    width: 1280,
-                    height: 720
-                }
-            },
-            launcher_config: {
-                download_multi: 30,
-                theme: 'dark',
-                closeLauncher: 'close-launcher',
-                intelEnabledMac: true
-            },
-            ...configClient,
-        };
+
         if (!configClient) {
-            await this.db.createData('configClient', defaultConfig);
+            await this.db.createData('configClient', {
+                account_selected: null,
+                instance_selct: null,
+                java_config: {
+                    java_path: null,
+                    java_memory: {
+                        min: 5,
+                        max: 7
+                    }
+                },
+                game_config: {
+                    screen_size: {
+                        width: 1280,
+                        height: 720
+                    }
+                },
+                launcher_config: {
+                    download_multi: 30,
+                    theme: 'dark',
+                    closeLauncher: 'close-launcher',
+                    intelEnabledMac: true
+                }
+            })
         }
-        await this.db.updateData('configClient', defaultConfig);
-        configClient = await this.db.readData('configClient')
-        console.log(configClient)
     }
 
     createPanels(...panels) {
@@ -122,9 +120,8 @@ class Launcher {
 
     async startLauncher() {
         let accounts = await this.db.readAllData('accounts')
-        console.logFile(accounts);
         let configClient = await this.db.readData('configClient')
-        let account_selected = configClient ? configClient?.account_selected : null
+        let account_selected = configClient ? configClient.account_selected : null
         let popupRefresh = new popup();
 
         if (accounts?.length) {
@@ -156,7 +153,6 @@ class Launcher {
                     }
 
                     refresh_accounts.ID = account_ID
-                    console.logFile(refresh_accounts);
                     await this.db.updateData('accounts', refresh_accounts, account_ID)
                     await addAccount(refresh_accounts)
                     if (account_ID == account_selected) accountSelect(refresh_accounts)
@@ -229,9 +225,8 @@ class Launcher {
             }
 
             accounts = await this.db.readAllData('accounts')
-            // console.log(accounts)
             configClient = await this.db.readData('configClient')
-            account_selected = configClient ? configClient?.account_selected : null
+            account_selected = configClient ? configClient.account_selected : null
 
             if (!account_selected) {
                 let uuid = accounts[0].ID
@@ -250,7 +245,7 @@ class Launcher {
             }
 
             popupRefresh.closePopup()
-            changePanel("lobby");
+            changePanel("home");
         } else {
             popupRefresh.closePopup()
             changePanel('login');

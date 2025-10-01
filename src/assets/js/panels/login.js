@@ -1,5 +1,4 @@
-// const { AZauth, Mojang } = require('minecraft-java-core');
-const { AZauth, Mojang } = require('mc-java-core-333');
+const { AZauth, Mojang } = require('minecraft-java-core');
 const { ipcRenderer } = require('electron');
 import { popup, database, changePanel, accountSelect, addAccount, config, setStatus } from '../utils.js';
 
@@ -47,16 +46,14 @@ class Login {
             popupLogin.openPopup({ title: popupTitle, content: popupContent, color: 'var(--color)' });
 
             ipcRenderer.invoke(ipcEvent, this.config.client_id).then(async account_connect => {
-                console.logFile(account_connect);
-                // popupLogin.closePopup();
-                if (account_connect === 'cancel' || !account_connect) throw new Error('Inicio de sesión cancelado, interrumpido o timeout.');
-                if (typeof account_connect !== 'object') throw new Error(`Unexpected response (${account_connect.constructor?.name}): ${account_connect}`);
-                if (account_connect.error) throw new Error(`mc-java-core-333 response: ${JSON.stringify(account_connect)}`);
-                await this.saveData(account_connect);
-                popupLogin.closePopup();
-            }).catch((error) => {
-                // popupLogin.openPopup({ title: 'Error de Sesion', content: 'La cuenta que has puesto no tiene MINECRAFT comprado o has puesto una invalida.', options: true });
-                popupLogin.openPopup({ title: 'Error de Sesión', content: `${error}`, options: true });
+                if (account_connect === 'cancel' || !account_connect) {
+                    popupLogin.closePopup();
+                } else {
+                    await this.saveData(account_connect);
+                    popupLogin.closePopup();
+                }
+            }).catch(() => {
+                popupLogin.openPopup({ title: 'Error de Sesion', content: 'La cuenta que has puesto no tiene MINECRAFT comprado o has puesto una invalida.', options: true });
             });
         });
     }
@@ -182,7 +179,7 @@ class Login {
         await this.db.updateData('configClient', configClient);
         await addAccount(account);
         await accountSelect(account);
-        changePanel('lobby');
+        changePanel('home');
     }
 }
 export default Login;

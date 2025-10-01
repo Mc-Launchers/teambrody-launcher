@@ -1,3 +1,7 @@
+/**
+ * @author Luuxis
+ * @license CC-BY-NC 4.0 - https://creativecommons.org/licenses/by-nc/4.0
+ */
 
 const { app, BrowserWindow, Menu } = require("electron");
 const path = require("path");
@@ -30,9 +34,7 @@ function createWindow() {
         show: false,
         webPreferences: {
             contextIsolation: false,
-            nodeIntegration: true,
-            scrollBounce: true,
-            overlayScrollbars: true,
+            nodeIntegration: true
         },
     });
     Menu.setApplicationMenu(null);
