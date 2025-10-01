@@ -152,7 +152,7 @@ const setupAutoUpdater = () => {
         provider: 'github',
         owner: 'Mc-Launchers',
         repo: 'TeamBrody',
-        token: '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',
+        token: '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',
     });
 
     ipcMain.handle('update-app', async () => {
