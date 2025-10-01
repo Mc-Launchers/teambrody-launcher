@@ -1,7 +1,7 @@
 {
     "name": "teambrody",
     "preductname": "Team Brody",
-    "version": "2.0.7",
+    "version": "2.0.8",
     "description": "Launcher para eventos de teambrody.",
     "main": "src/app.js",
     "author": {
@@ -36,7 +36,7 @@
         "node-fetch": "^2.7.0",
         "ping": "^0.4.2",
         "socket.io-client": "^4.6.1",
-        "sweetalert2": "^11.10.4"
+        "sweetalert2": "^11.23.0"
     },
     "devDependencies": {
         "cross-env": "^7.0.3",
