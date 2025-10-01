@@ -1,21 +1,18 @@
 <html>
-<head>
-    <meta charset="UTF-8">
-    <!-- Keep the CSP strict: only allow local scripts -->
-    <meta http-equiv="Content-Security-Policy" content="script-src 'self';">
-    <link rel="stylesheet" href="assets/css/index.css">
-</head>
-<body>
-    <div id="splash" style="display:none">
-        <img class="splash" src="assets/images/default/icon.png" />
-        <p class="splash-message"></p>
-        <p class="splash-author"><span class="author"></span></p>
-        <p class="message">Cargando Contenido..</p>
-        <progress value="0" max="0" class="progress"></progress>
-
-        <!-- Load SweetAlert2 locally -->
-        <script src="assets/js/sweetalert2.all.min.js"></script>
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="Content-Security-Policy" content="script-src 'self';">
+        <link rel="stylesheet" href="assets/css/index.css">
+    </head>
+    <body>
+        <div id="splash" style="display:none">
+            <img class="splash" src="assets/images/default/icon.png" />
+            <p class="splash-message"></p>
+            <p class="splash-author"><span class="author"></span></p>
+            <p class="message">Cargando Contenido..</p>
+            <progress value="0" max="0" class="progress"></progress>
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        </div>
         <script src="assets/js/index.js" type="module"></script>
-    </div>
-</body>
+    </body>
 </html>
