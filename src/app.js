@@ -176,8 +176,6 @@ const setupAutoUpdater = () => {
             provider: 'github',
             owner: 'Mc-Launchers',
             repo: 'teambrody-launcher',
-            private: true,
-            token
         });
         try {
             const { updateInfo } = await autoUpdater.checkForUpdates();
