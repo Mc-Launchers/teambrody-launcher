@@ -147,26 +147,47 @@ const setupDiscordRPC = () => {
 };
 
 const setupAutoUpdater = () => {
-    autoUpdater.autoDownload = false;
-    autoUpdater.setFeedURL({
-        provider: 'github',
-        owner: 'Mc-Launchers',
-        repo: 'TeamBrody',
-        token: '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',
-    });
-
-    ipcMain.handle('update-app', async () => {
+    autoUpdater.logger = require('electron-log');
+    // autoUpdater.logger.transports.file.level = 'debug';
+    const arch = os.arch();
+    autoUpdater.logger.info(`Platform: ${os.platform()}`);
+    autoUpdater.logger.info(`Arch: ${arch}`);
+    switch (arch) {
+        case 'x64':
+        case 'arm64':
+            break;
+        case 'ia32':
+        default:
+            let err = `Unsupported architecture: ${arch}`;
+            autoUpdater.logger.error(err);
+            UpdateWindow.getWindow()?.webContents.send('update-error', err);
+            break;
+    }
+    autoUpdater.autoDownload = true;
+    
+    ipcMain.handle('update-app', async (_, token) => {
+        if (!token) {
+            autoUpdater.logger.error('It was not possible to get the github token.');
+            UpdateWindow.getWindow()?.webContents.send('update-error', 'No se pudo obtener el token de Github.');
+            return;
+        }
+        autoUpdater.setFeedURL({
+            provider: 'github',
+            owner: 'Mc-Launchers',
+            repo: 'Alondrissa-client',
+            private: true,
+            token
+        });
         try {
-            const res = await autoUpdater.checkForUpdates();
-            return res;
+            const { updateInfo } = await autoUpdater.checkForUpdates();
+            return updateInfo;
         } catch (error) {
             return { error: true, message: error.message };
         }
     });
 
     autoUpdater.on('update-available', () => {
-        const updateWindow = UpdateWindow.getWindow();
-        if (updateWindow) updateWindow.webContents.send('updateAvailable');
+        UpdateWindow.getWindow()?.webContents.send('updateAvailable');
     });
 
     ipcMain.on('start-update', () => {
@@ -174,17 +195,62 @@ const setupAutoUpdater = () => {
     });
 
     autoUpdater.on('update-not-available', () => {
-        const updateWindow = UpdateWindow.getWindow();
-        if (updateWindow) updateWindow.webContents.send('update-not-available');
+        UpdateWindow.getWindow()?.webContents.send('update-not-available');
     });
 
     autoUpdater.on('update-downloaded', () => {
-        autoUpdater.quitAndInstall();
+        autoUpdater.quitAndInstall(true, true);
     });
 
     autoUpdater.on('download-progress', (progress) => {
+        UpdateWindow.getWindow()?.webContents.send('download-progress', progress);
+    });
+
+    autoUpdater.on('error', (error) => {
+        autoUpdater.logger.error('Error en el auto-updater:', error);
         const updateWindow = UpdateWindow.getWindow();
-        if (updateWindow) updateWindow.webContents.send('download-progress', progress);
+        const message = error.message || '';
+
+        if (!(process.platform === 'darwin' && (message.includes('code signature') || /did not pass validation/.test(message)))) {
+            updateWindow?.webContents.send('update-error', error);
+            return;
+        }
+
+        updateWindow?.webContents.send('unzip-start');
+        autoUpdater.logger.warn('Fallback: extrayendo con ditto y limpiando cuarentena...');
+
+        const cacheDir = path.join(autoUpdater.app.baseCachePath, `${autoUpdater.app.name}-updater`, 'pending');
+        try {
+            const zipFile = fs.readdirSync(cacheDir).find((file) => file.endsWith('.zip'));
+            if (!zipFile) throw new Error('No zip file found in cache directory');
+
+            const zipPath = path.join(cacheDir, zipFile);
+            const destApp = `/Applications/${autoUpdater.app.name}.app`;
+
+            if (fs.existsSync(destApp)) execSync(`rm -rf "${destApp}`);
+
+            autoUpdater.logger.info(`Extrayendo: ${zipFile} (${zipPath}) a ${destApp}`);
+            exec(`ditto -xk "${zipPath}" "${destApp}"`, (err) => {
+                if (err) throw err;
+
+                execSync(`xattr -dr com.apple.qurantine "${destApp}`);
+                autoUpdater.logger.info('Extracción y limpieza completadas.');
+
+                app.relaunch();
+                app.exit(0);
+            });
+        } catch (err) {
+            autoUpdater.logger.error('Error en fallback al descomprimir:', err);
+            const enhancedError = {
+                ...err,
+                extraInfo: 'Instalación manual es requerida',
+            };
+            autoUpdater.logger.error(enhancedError.extraInfo);
+            updateWindow?.webContents.send('unzip-error', enhancedError);
+
+            const shellError = shell.openPath(cacheDir);
+            if (shellError) autoUpdater.logger.error(shellError);
+        }
     });
 };
 
