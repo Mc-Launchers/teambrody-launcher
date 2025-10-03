@@ -82,7 +82,7 @@ const setupDiscordRPC = () => {
     let startedAppTime = Date.now();
 
     ipcMain.on('new-status-discord', async () => {
-        client.login({ clientId: '1228439660523552779' });
+        client.login({ clientId: '1287890334780624996' });
         client.on('ready', () => {
             client.request('SET_ACTIVITY', {
                 pid: process.pid,
@@ -105,7 +105,7 @@ const setupDiscordRPC = () => {
         console.log(status);
         if (client) await client.destroy();
         client = new rpc.Client({ transport: 'ipc' });
-        client.login({ clientId: '1228439660523552779' });
+        client.login({ clientId: '1287890334780624996' });
         client.on('ready', () => {
             client.request('SET_ACTIVITY', {
                 pid: process.pid,
@@ -127,7 +127,7 @@ const setupDiscordRPC = () => {
     ipcMain.on('delete-and-new-status-discord', async () => {
         if (client) client.destroy();
         client = new rpc.Client({ transport: 'ipc' });
-        client.login({ clientId: '1228439660523552779' });
+        client.login({ clientId: '1287890334780624996' });
         client.on('ready', () => {
             client.request('SET_ACTIVITY', {
                 pid: process.pid,
